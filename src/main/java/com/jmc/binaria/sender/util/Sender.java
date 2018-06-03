@@ -1,6 +1,5 @@
 package com.jmc.binaria.sender.util;
 
-import com.jmc.core.util.archivo.BinariaArchivo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

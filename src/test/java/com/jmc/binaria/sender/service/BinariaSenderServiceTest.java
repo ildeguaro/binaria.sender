@@ -4,6 +4,8 @@ package com.jmc.binaria.sender.service;
 
 import java.io.IOException;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +39,7 @@ public class BinariaSenderServiceTest {
 			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\"]\n" + 
 			"}";
 	
-	//@Test
+	@Test
 	public void createEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		SendEmailPayload payload = objectMapper.readValue(body, SendEmailPayload.class);			   
 		String[] packages = payload.getPackagesName();

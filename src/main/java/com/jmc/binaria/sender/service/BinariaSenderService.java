@@ -4,6 +4,7 @@ import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.FtpSettings;
 import com.jmc.binaria.sender.model.SmtpSettigs;
 import com.jmc.binaria.sender.util.BinariaUtil;
+import com.jmc.binaria.sender.util.FTPUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,13 +39,15 @@ public class BinariaSenderService {
 		listaDeNombreDePaquetes.addAll(Arrays.asList(packages));
 		File paquetePdf = null;
 		System.out.println("OBTENIENDO PAQUETES DE FTP");
+		FTPUtils.conectar(ftpSettings.getHost(), Integer.parseInt(ftpSettings.getPort()),
+				ftpSettings.getUsername(), ftpSettings.getPassword());
 		for (String elemento : listaDeNombreDePaquetes) {
 			System.out.println("---- > "+elemento);
-			paquetePdf = BinariaUtil.getPaqueteOrdenImpresionDesdeFTP(ftpSettings.getHost(), ftpSettings.getPort(),
-					ftpSettings.getUsername(), ftpSettings.getPassword(), elemento);
+			paquetePdf = BinariaUtil.getPaqueteOrdenImpresionDesdeFTP(elemento);
 			listaPaqueteArchivos.add(paquetePdf);
 			System.out.println("Descargado : " + paquetePdf.getAbsolutePath());
 		}
+		FTPUtils.desconectar();
 		System.out.println(" REALIZADO OBTENCION PAQUETES DE FTP ");
 
 		System.out.println(" SEPARANDO PDF DE PAQUETES ");
@@ -55,7 +58,7 @@ public class BinariaSenderService {
 			// colaArchivosEnvio.addAll(Arrays.asList(temp.listFiles()));
 			// Encolar en la tabla de envios
 		}
-
+		
 		return campaing;
 	}
 

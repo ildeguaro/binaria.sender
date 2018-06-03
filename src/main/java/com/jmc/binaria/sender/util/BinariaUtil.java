@@ -1,7 +1,6 @@
 package com.jmc.binaria.sender.util;
 
-import com.jmc.core.exception.GeneralException;
-import com.jmc.core.util.archivo.BinariaArchivo;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -78,17 +77,16 @@ public class BinariaUtil {
 		}
 	}
 
-	public static File getPaqueteOrdenImpresionDesdeFTP(String ftpHost, String ftpPor, String ftpUser, String ftpPsw,
-			String nombreArchivo) throws IOException {
+	public static File getPaqueteOrdenImpresionDesdeFTP(String nombreArchivo) throws IOException {
 		try {
 
 			String[] cadenaSeparada = nombreArchivo.split("/");
 			String archivo = cadenaSeparada[cadenaSeparada.length - 1];
 			String dir = nombreArchivo.substring(0, nombreArchivo.length() - archivo.length());
-
-			File archivoBuscado = new BinariaArchivo().descargaFTP(ftpHost, ftpPor, ftpUser, ftpPsw, dir, archivo);
+			
+			File archivoBuscado = FTPUtils.descargar(dir, archivo);
 			return archivoBuscado;
-		} catch (GeneralException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
