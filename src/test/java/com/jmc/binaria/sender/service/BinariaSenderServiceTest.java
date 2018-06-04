@@ -1,17 +1,18 @@
 package com.jmc.binaria.sender.service;
 
-
-
 import java.io.IOException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jmc.binaria.sender.model.EmailCampaign;
+import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
 
+@RunWith(JUnit4.class)
 public class BinariaSenderServiceTest {
 	
 	private BinariaSenderService service = new BinariaSenderService();
@@ -35,15 +36,16 @@ public class BinariaSenderServiceTest {
 			"    \"body\": \"<body></body>\",\n" + 
 			"    \"attachmenName\": \"SuEdoCuenta\"\n" + 
 			"  },\n" + 
-			"  \n" + 
-			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\"]\n" + 
+			"  \"customerId\":1,\n" + 
+			"  \"ordenImpresionId\":\"3\",\n" + 
+			"  \"emailDescription\":\"envio mes de enero 2018\",\n" + 
+			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\",\"files/pueba-separar/00_DINNERS_DOCUMENTO.pdf\"]\n" + 
 			"}";
 	
 	@Test
 	public void createEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		SendEmailPayload payload = objectMapper.readValue(body, SendEmailPayload.class);			   
-		String[] packages = payload.getPackagesName();
-		EmailCampaign campaign = service.createEmailCampaign(payload.getFtpValues(), payload.getSmtpValues(), packages);
+		Campaign campaign = service.createEmailCampaign(payload);
 		
 	}
 

@@ -2,7 +2,7 @@ package com.jmc.binaria.sender.model;
 
 public class Customer {
   
-  private String id;
+  private int id;
   
   private String number;
   
@@ -12,11 +12,11 @@ public class Customer {
   
   private SmtpSettigs smtSettings;
 
-  public String getId() {
+  public int getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(int id) {
     this.id = id;
   }
 
