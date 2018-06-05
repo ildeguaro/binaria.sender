@@ -2,8 +2,6 @@ package com.jmc.binaria.sender.model;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Campaign {
 
 	private String id;
@@ -19,6 +17,8 @@ public class Campaign {
 	private String ordenImpresionId;
 
 	private Date creationDate;
+	
+	private String emailTemplate;
 
 	private Date sendingBeginDate;
 
@@ -74,6 +74,14 @@ public class Campaign {
 
 	public void setOrdenImpresionId(String ordenImpresionId) {
 		this.ordenImpresionId = ordenImpresionId;
+	}
+
+	public String getEmailTemplate() {
+		return emailTemplate;
+	}
+
+	public void setEmailTemplate(String emailTemplate) {
+		this.emailTemplate = emailTemplate;
 	}
 
 	public Date getCreationDate() {

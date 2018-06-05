@@ -18,8 +18,9 @@ public class CampaignDaoImplTest {
 		customer.setId(1);
 		String nameCampaig = "ENVIOS EMAIL 2018";
 		Long ordenImpresionId = 2l ;
+		String html = "<body>[cuenta] y [saldoinicial] tambien [saldofinal] con emision [fechaemision] debes pagar [fechamaxpago]</body>";
 	    CampaignDao dao = new CampaignDaoImpl();
-	    Campaign dato = dao.createCampaing(customer, nameCampaig, ordenImpresionId);
+	    Campaign dato = dao.createCampaing(customer, nameCampaig, ordenImpresionId,html);
 	    assertNotNull(dato);	    
 	}
 

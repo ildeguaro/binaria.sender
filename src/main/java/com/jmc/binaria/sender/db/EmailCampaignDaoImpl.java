@@ -16,13 +16,18 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		try {
 			Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
 			conn.createQuery("insert into " + TABLE_NAME
-					+ " (sender_campaigns_id,addresses,names,package_id,document_id,fields_search)"
-					+ " VALUES (:sender_campaigns_id, :addresses, :names, :package_id, :document_id, :fields_search)")
+					+ " (sender_campaigns_id,addresses,names,package_id,document_id,attachment_path,content_email,fields_search,sender_id)"
+					+ " VALUES (:sender_campaigns_id, :addresses, :names, :package_id, :document_id, :attachment_path,"
+					+ " :content_email, :fields_search, :sender_id)")
 
 					.addParameter("sender_campaigns_id", ec.getCampaignId())
 					.addParameter("addresses", ec.getAddresses()).addParameter("names", ec.getNames())
 					.addParameter("package_id", ec.getPackageId()).addParameter("document_id", ec.getDocumentId())
-					.addParameter("fields_search", ec.getFieldsSearch()).executeUpdate();
+					.addParameter("attachment_path", ec.getAttachmentPath())
+					.addParameter("content_email", ec.getContentEmail())
+					.addParameter("fields_search", ec.getFieldsSearch())
+					.addParameter("sender_id", ec.getSenderId())
+					.executeUpdate();
 			conn.commit();
 
 		} catch (Exception e) {
@@ -38,7 +43,6 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					+ " set sending_date = now(), sent = :sent, response = :response, error = :error")
 					.addParameter("sent", ec.isWasSent()).addParameter("response", ec.getResponse())
 					.addParameter("error", ec.getError())
-
 					.executeUpdate();
 			conn.commit();
 
@@ -53,7 +57,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		return null;
 	}
 
-	public List<EmailCampaign> selectEmailToSend(long ordenId, int quantity) {
+	public List<EmailCampaign> selectEmailToSend(long ordenId, int quantity, int senderId) {
 		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
 
 		try {
@@ -62,8 +66,11 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("campaign_id", "campaignId")
 					.addColumnMapping("package_id", "packageId")
 					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
 					.addColumnMapping("sending_date", "sendingDate")
 					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {

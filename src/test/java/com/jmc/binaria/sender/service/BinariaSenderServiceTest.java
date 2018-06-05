@@ -1,5 +1,7 @@
 package com.jmc.binaria.sender.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 
 import org.junit.Test;
@@ -33,20 +35,20 @@ public class BinariaSenderServiceTest {
 			"    \"password\": \"password\",\n" + 
 			"    \"from\": \"from\",\n" + 
 			"    \"subject\": \"subject\",\n" + 
-			"    \"body\": \"<body></body>\",\n" + 
+			"    \"body\": \"<body>[cuenta] y [saldoinicial] tambien [saldofinal] con emision [fechaemision] debes pagar [fechamaxpago]</body>\",\n" + 
 			"    \"attachmenName\": \"SuEdoCuenta\"\n" + 
 			"  },\n" + 
 			"  \"customerId\":1,\n" + 
 			"  \"ordenImpresionId\":\"3\",\n" + 
 			"  \"emailDescription\":\"envio mes de enero 2018\",\n" + 
-			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\",\"files/pueba-separar/00_DINNERS_DOCUMENTO.pdf\"]\n" + 
+			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\"]" + 
 			"}";
 	
 	@Test
 	public void createEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		SendEmailPayload payload = objectMapper.readValue(body, SendEmailPayload.class);			   
 		Campaign campaign = service.createEmailCampaign(payload);
-		
+		assertNotNull(campaign);		
 	}
 
 

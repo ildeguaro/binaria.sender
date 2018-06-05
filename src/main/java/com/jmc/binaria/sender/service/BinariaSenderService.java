@@ -71,27 +71,25 @@ public class BinariaSenderService {
 		customer.setId(payload.getCustomerId());
 		String nameCampaig = payload.getEmailDescription();
 		Long ordenImpresionId = Long.parseLong(payload.getOrdenImpresionId());
-		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId);
+		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId,payload.getSmtpValues().getBody());
 		System.out.println(" SEPARANDO PDF DE PAQUETES ");
 		for (File arch : listaPaqueteArchivos) {
 			String dir = "/tmp/PAQUETE_" + arch.getName().replace(".pdf", "");
 			BinariaUtil.separarDocumentos(arch, dir);
 			File temp = new File(dir);
-			encolaDocuments(temp,"PAQUETE_" + arch.getName().replace(".pdf", ""), campaing.getId());
+			encolaDocuments(temp,"PAQUETE_" + arch.getName().replace(".pdf", ""), 
+					campaing.getId(), campaing.getEmailTemplate());
 
 		}
 		return campaing;
 	}
 
-	private void encolaDocuments(File file, String paqueteName, String campaignId) {
-
-		// String id = sti.nextToken();
-		
-		try {
-			
+	private void encolaDocuments(File file, String paqueteName, String campaignId, String contentEmail) {		
+		try {			
 			for (File f : file.listFiles()) {
+				String contentHtml = contentEmail;
 				sti = new StringTokenizer(f.getName(), "|");
-				String id = sti.nextToken();
+				sti.nextToken();
 				String direccion = sti.nextToken();
 				String nombreDestinatario = sti.nextToken();
 				StringBuilder camposDeBusqueda = new StringBuilder();
@@ -106,13 +104,17 @@ public class BinariaSenderService {
 					String[] splitedString = val.split("=");
 					String key = splitedString[0].replace("{", "");
 					String value = splitedString[1].replace("}", "");
-					camposDeBusqueda.append(key).append("=").append(value).append(";");
+					contentHtml = contentHtml.replace(key, value);
+					camposDeBusqueda.append(key.replace("[", "").replace("]","")).append("=").append(value).append(";");
 				}
 				EmailCampaign ec = new EmailCampaign();
 				ec.setCampaignId(campaignId);
 				ec.setAddresses(direccion);
 				ec.setNames(nombreDestinatario);
 				ec.setPackageId(paqueteName);
+				ec.setAttachmentPath(f.getCanonicalPath());
+				
+				ec.setContentEmail(contentHtml);
 				ec.setFieldsSearch(camposDeBusqueda.toString());
 				emailCampaignDao.createEmailCampaing(ec);
 

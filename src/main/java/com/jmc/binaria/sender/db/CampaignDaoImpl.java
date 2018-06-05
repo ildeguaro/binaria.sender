@@ -12,18 +12,19 @@ public class CampaignDaoImpl implements CampaignDao {
 	
 	private static String TABLE_NAME = "sender_campaigns";
 
-	public Campaign createCampaing(Customer customer, String nameCampaig, Long ordenImpresionId) {
+	public Campaign createCampaing(Customer customer, String nameCampaig, Long ordenImpresionId, String emailTemplate) {
 		try {
 			String uuid = getUUIDFromSQL();
 			Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
 			conn.createQuery(
-					"insert into "+TABLE_NAME+" (uuid,name,customer_id,orden_impresion_id,creation_date,status)"
-							+ " VALUES (:uuid, :name, :customer_id, :orden_impresion_id, now(), :status)")
+					"insert into "+TABLE_NAME+" (uuid,name,customer_id,orden_impresion_id,html_template,creation_date,status)"
+							+ " VALUES (:uuid, :name, :customer_id, :orden_impresion_id, :html_template, now(), :status)")
 					
 					.addParameter("uuid", uuid)
 					.addParameter("name", nameCampaig)
 					.addParameter("customer_id", customer.getId())
 					.addParameter("orden_impresion_id", ordenImpresionId)
+					.addParameter("html_template", emailTemplate)
 					.addParameter("status", "CREATED")
 					.executeUpdate();
 			conn.commit();
@@ -61,6 +62,7 @@ public class CampaignDaoImpl implements CampaignDao {
 					.addColumnMapping("sending_begin","sendingBeginDate")
 					.addColumnMapping("sending_end","sendingEndDate")
 					.addColumnMapping("sending_duration","duration")
+					.addColumnMapping("html_template", "emailTemplate")
 					.executeAndFetch(Campaign.class);
 			if (result != null && !result.isEmpty())
 				object = result.get(0);

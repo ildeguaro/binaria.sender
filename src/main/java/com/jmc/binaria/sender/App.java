@@ -5,12 +5,16 @@ import spark.Response;
 import spark.Route;
 import static spark.Spark.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.jmc.binaria.sender.model.Campaign;
+import com.jmc.binaria.sender.model.Sender;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
 import com.jmc.binaria.sender.service.BinariaSenderService;
+import com.jmc.binaria.sender.service.SenderService;
 import com.jmc.binaria.sender.util.RunTask;
 import org.codehaus.jackson.map.ObjectMapper;
 import com.google.gson.Gson;
@@ -27,14 +31,19 @@ public class App {
 	private static ObjectMapper objectMapper;
 
 	private static BinariaSenderService service;
+	
+	private static SenderService senderService;
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, UnknownHostException {
 
 		service = new BinariaSenderService();
-
+		senderService = new SenderService();
 		objectMapper = new ObjectMapper();
+		
+		Sender sender =senderService.registraMe(InetAddress.getLocalHost().getHostAddress(), 1150);
+		port(senderService.getPort());
 
-		post(CONTEXT_PATH + API_PATH + "sendemail", new Route() {
+		post(sender.getUriAccess() + API_PATH + "sendemail", new Route() {
 			public String handle(Request rqst, Response rspns) throws Exception {
 				rspns.type("application/json");
 
@@ -50,9 +59,9 @@ public class App {
 				return new Gson().toJson(campaign);
 			}
 		});
-
+		
 		System.out.println(
-				"Running service: binaria.sender on : \n" + "http://localhost:" + port() + CONTEXT_PATH + API_PATH);
+				"Running service: binaria.sender on : \n" + sender.getUriAccess());
 
 //		TimerTask task = new RunTask();
 //

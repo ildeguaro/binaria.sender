@@ -5,7 +5,7 @@ import com.jmc.binaria.sender.model.Campaign;
 
 public interface CampaignDao {
 
-	Campaign createCampaing(Customer customer, String nameCampaig, Long ordenImpresionId);
+	Campaign createCampaing(Customer customer, String nameCampaig, Long ordenImpresionId, String emailTemplate);
 	
 	String getUUIDFromSQL();
 	

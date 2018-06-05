@@ -11,7 +11,7 @@ public interface EmailCampaignDao {
 	
 	EmailCampaign updateSending(EmailCampaign emailCampaign);
 	
-	List<EmailCampaign> selectEmailToSend(long ordenId, int quantity);
+	List<EmailCampaign> selectEmailToSend(long ordenId, int quantity, int senderId);
 	
 	EmailCampaign findEmailCampaignByColumns(Map<String, String> columns);
 
