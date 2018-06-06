@@ -42,6 +42,7 @@ CREATE TABLE sender_events(
 
 CREATE TABLE sender_senders(
   id bigint(20) NOT NULL AUTO_INCREMENT,
-  name varchar(125),   
+  name varchar(125), 
+  uri  varchar(125), 
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
