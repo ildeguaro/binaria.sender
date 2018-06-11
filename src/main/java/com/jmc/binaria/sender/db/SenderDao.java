@@ -13,4 +13,6 @@ public interface SenderDao {
 	public int nextSenderId();
 	
 	public List<Sender> findAll();
+	
+	public boolean delete(Sender sender); 
 }

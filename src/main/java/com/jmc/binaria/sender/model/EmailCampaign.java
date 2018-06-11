@@ -31,6 +31,12 @@ public class EmailCampaign {
 	private String fieldsSearch;
 	
 	private int senderId;
+	
+	private String campaignUuid;
+	
+	private String campaignName;
+	
+	private Date campaignDate;
 
 	public String getId() {
 		return id;
@@ -143,6 +149,31 @@ public class EmailCampaign {
 	public void setSenderId(int senderId) {
 		this.senderId = senderId;
 	}
-	
+
+	public String getCampaignUuid() {
+		return campaignUuid;
+	}
+
+	public void setCampaignUuid(String campaignUuid) {
+		this.campaignUuid = campaignUuid;
+	}
+
+	public String getCampaignName() {
+		return campaignName;
+	}
+
+	public void setCampaignName(String campaignName) {
+		this.campaignName = campaignName;
+	}
+
+	public Date getCampaignDate() {
+		return campaignDate;
+	}
+
+	public void setCampaignDate(Date campaignDate) {
+		this.campaignDate = campaignDate;
+	}
+
+		
 	
 }

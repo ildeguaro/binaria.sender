@@ -72,4 +72,24 @@ public class CampaignDaoImpl implements CampaignDao {
 		return object;
 	}
 
+	public List<Campaign> allCampaign() {
+		List<Campaign> result = new ArrayList<Campaign>();
+		try {			
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			result = conn.createQuery("select * from "+TABLE_NAME)					
+					.addColumnMapping("customer_id", "customerId")
+					.addColumnMapping("orden_impresion_id", "ordenImpresionId")
+					.addColumnMapping("creation_date", "creationDate")
+					.addColumnMapping("sending_begin","sendingBeginDate")
+					.addColumnMapping("sending_end","sendingEndDate")
+					.addColumnMapping("sending_duration","duration")
+					.addColumnMapping("html_template", "emailTemplate")
+					.executeAndFetch(Campaign.class);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }

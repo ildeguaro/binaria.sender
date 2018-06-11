@@ -1,6 +1,9 @@
 package com.jmc.binaria.sender.db;
 
 import com.jmc.binaria.sender.model.Customer;
+
+import java.util.List;
+
 import com.jmc.binaria.sender.model.Campaign;
 
 public interface CampaignDao {
@@ -10,5 +13,7 @@ public interface CampaignDao {
 	String getUUIDFromSQL();
 	
 	Campaign findCampaignByUiid(String uuid);
+	
+	List<Campaign> allCampaign();
 
 }

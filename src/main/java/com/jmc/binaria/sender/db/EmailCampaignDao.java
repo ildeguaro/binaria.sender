@@ -14,5 +14,15 @@ public interface EmailCampaignDao {
 	List<EmailCampaign> selectEmailToSend(long ordenId, int quantity, int senderId);
 	
 	EmailCampaign findEmailCampaignByColumns(Map<String, String> columns);
+	
+	List<EmailCampaign> findEmailCampaignByOrdenId(long ordenId);
+	
+	List<EmailCampaign> findEmailCampaignByFields(String words);
+	
+	List<EmailCampaign> findEmailCampaignByAddress(String address);
+	
+	List<EmailCampaign> findEmailCampaignByName(String name);
+	
+	List<EmailCampaign> findEmailCampaignByOrdenIdAddressNamesOrFieldsSearch(long ordenId, String address, String names, String searchFields);
 
 }

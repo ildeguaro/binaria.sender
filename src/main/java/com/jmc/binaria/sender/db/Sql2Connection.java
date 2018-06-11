@@ -8,7 +8,7 @@ public class Sql2Connection {
 
 	public static Sql2o getSql2oConnetion() {
 		if (sql2oConnection == null)
-			sql2oConnection = new Sql2o("jdbc:mysql://localhost:3306/test", "root", "123456");
+			sql2oConnection = new Sql2o("jdbc:mysql://localhost:3306/binaria_db_t", "root", "zxasqw12");
 		return sql2oConnection;
 	}
 

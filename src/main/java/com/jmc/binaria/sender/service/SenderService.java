@@ -32,5 +32,9 @@ public class SenderService {
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
+	public boolean killme(Sender sender) {
+		return senderDao.delete(sender);
+	}
 
 }

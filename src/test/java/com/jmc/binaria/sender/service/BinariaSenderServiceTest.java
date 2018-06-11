@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -43,12 +44,52 @@ public class BinariaSenderServiceTest {
 			"  \"emailDescription\":\"envio mes de enero 2018\",\n" + 
 			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\"]" + 
 			"}";
-	
+	@Ignore
 	@Test
 	public void createEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		SendEmailPayload payload = objectMapper.readValue(body, SendEmailPayload.class);			   
 		Campaign campaign = service.createEmailCampaign(payload);
 		assertNotNull(campaign);		
+	}
+	@Ignore
+	@Test
+	public void getEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
+		
+		service.getEmailCampaignByFields("MYO");
+		//assertNotNull(campaign);		
+	}
+	
+	@Ignore
+	@Test
+	public void getEmailCampaignBasicOnlyOrdenId() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
+		service.getEmailCampaignByBasicSearch(1, "", "", "");
+		//assertNotNull(campaign);		
+	}
+	
+	@Ignore
+	@Test
+	public void getEmailCampaignBasicOnlyAddress() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
+		service.getEmailCampaignByBasicSearch(0, "jcarslosm@gmail.com", "", "");
+		//assertNotNull(campaign);		
+	}
+	
+	@Ignore
+	@Test
+	public void getEmailCampaignBasicOnlYNames() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
+		service.getEmailCampaignByBasicSearch(0, "", "NMD", "");
+		//assertNotNull(campaign);		
+	}
+	@Ignore
+	@Test
+	public void getEmailCampaignBasicOnlyFieldsSearch() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
+		service.getEmailCampaignByBasicSearch(0, "", "", "MY");
+		//assertNotNull(campaign);		
+	}
+	
+	@Test
+	public void getEmailCampaignBasicOnlyOrdenIdAndAddress() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
+		service.getEmailCampaignByBasicSearch(1, "jcarslosm@gmail.com", "", "");
+		//assertNotNull(campaign);		
 	}
 
 

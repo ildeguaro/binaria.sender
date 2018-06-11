@@ -124,5 +124,21 @@ public class BinariaSenderService {
 			e.printStackTrace();
 		}
 	}
+	
+	public List<EmailCampaign> getEmailCampaignByFields(String words) {
+		return emailCampaignDao.findEmailCampaignByFields(words);
+	}
+	
+	public List<EmailCampaign> getEmailCampaignByOrdenId(long ordenId) {
+		return emailCampaignDao.findEmailCampaignByOrdenId(ordenId);
+	}
+	
+	public List<Campaign> getAllCampaign(){
+		return campaignDao.allCampaign();
+	}
+	
+	public List<EmailCampaign> getEmailCampaignByBasicSearch(long ordenId, String address, String names, String searchFields) {
+		return emailCampaignDao.findEmailCampaignByOrdenIdAddressNamesOrFieldsSearch(ordenId, address, names, searchFields);
+	}
 
 }

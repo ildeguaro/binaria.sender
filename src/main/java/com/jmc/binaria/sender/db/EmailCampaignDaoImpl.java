@@ -63,7 +63,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		try {
 			Connection conn = Sql2Connection.getSql2oConnetion().open();
 			result = conn.createQuery("select * from " + TABLE_NAME + " where sent = 0 ")
-					.addColumnMapping("campaign_id", "campaignId")
+					.addColumnMapping("sender_campaigns_id", "campaignId")
 					.addColumnMapping("package_id", "packageId")
 					.addColumnMapping("document_id", "documentId")
 					.addColumnMapping("attachment_path", "attachmentPath")
@@ -71,6 +71,194 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sending_date", "sendingDate")
 					.addColumnMapping("sent", "wasSent")
 					.addColumnMapping("sender_id", "senderId")
+					.executeAndFetch(EmailCampaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public List<EmailCampaign> findEmailCampaignByFields(String words) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select sec.*, sc.uuid, sc.name, sc.creation_date from sender_email_campaign sec " + 
+					"join sender_campaigns sc on sec.sender_campaigns_id = sc.id  " + 
+					"where sec.fields_search like '%"+words+"%'";
+			System.out.println(sql);
+			result = conn.createQuery(sql)
+					
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("uuid", "campaignUuid")
+					.addColumnMapping("name", "campaignName")
+					.addColumnMapping("creation_date", "campaignDate")
+					.executeAndFetch(EmailCampaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public List<EmailCampaign> findEmailCampaignByOrdenId(long ordenId) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select sec.*, sc.uuid, sc.name, sc.creation_date from sender_email_campaign sec " + 
+					"join sender_campaigns sc on sec.sender_campaigns_id = sc.id  " + 
+					"where sc.id =  :ordenId order by sc.id desc";
+			System.out.println(sql);
+			result = conn.createQuery(sql)
+					.addParameter("ordenId", ordenId)
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("uuid", "campaignUuid")
+					.addColumnMapping("name", "campaignName")
+					.addColumnMapping("creation_date", "campaignDate")
+					.executeAndFetch(EmailCampaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public List<EmailCampaign> findEmailCampaignByAddress(String address) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select sec.*, sc.uuid, sc.name, sc.creation_date from sender_email_campaign sec " + 
+					"join sender_campaigns sc on sec.sender_campaigns_id = sc.id  " + 
+					"where sec.addresses = :address order by sc.id desc";
+			System.out.println(sql);
+			result = conn.createQuery(sql)
+					.addParameter("ordenId", address)
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("uuid", "campaignUuid")
+					.addColumnMapping("name", "campaignName")
+					.addColumnMapping("creation_date", "campaignDate")
+					.executeAndFetch(EmailCampaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public List<EmailCampaign> findEmailCampaignByName(String name) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select sec.*, sc.uuid, sc.name, sc.creation_date from sender_email_campaign sec " + 
+					"join sender_campaigns sc on sec.sender_campaigns_id = sc.id  " + 
+					"where sec.name = :name order by sc.id desc";
+			System.out.println(sql);
+			result = conn.createQuery(sql)
+					.addParameter("name", name)
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("uuid", "campaignUuid")
+					.addColumnMapping("name", "campaignName")
+					.addColumnMapping("creation_date", "campaignDate")
+					.executeAndFetch(EmailCampaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public List<EmailCampaign> findEmailCampaignByOrdenIdAddressNamesOrFieldsSearch(long ordenId, String address,
+			String names, String searchFields) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			StringBuilder sql = new StringBuilder("select sec.*, sc.id, sc.uuid, sc.name, sc.creation_date \n");
+					
+			sql.append("from sender_email_campaign sec \n");
+			sql.append("join sender_campaigns sc on sec.sender_campaigns_id = sc.id  \n" );
+			sql.append("where \n");
+			if (ordenId > 0) {
+				sql.append("sc.id = ");
+				sql.append(ordenId);
+				sql.append(" ");
+			}
+			if (!address.isEmpty()) {
+				if (ordenId>0)
+					sql.append("AND ");
+				sql.append("sec.addresses = '");
+				sql.append(address);
+				sql.append("' ");
+				
+			}
+			if (!names.isEmpty()) {	
+				if (!address.isEmpty() || ordenId > 0)
+					sql.append("AND ");
+				sql.append("sec.names = '");
+				sql.append(names);
+				sql.append("' ");
+			}
+			if (!searchFields.isEmpty()) {
+				if (!names.isEmpty() || !address.isEmpty() || ordenId > 0)
+					sql.append("AND ");
+				sql.append("fields_search like '%");
+				sql.append(searchFields);
+				sql.append("%'");
+			}
+			
+			sql.append(" order by sc.id desc");
+			
+			System.out.println(sql.toString());
+			result = conn.createQuery(sql.toString())
+									
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("uuid", "campaignUuid")
+					.addColumnMapping("name", "campaignName")
+					.addColumnMapping("creation_date", "campaignDate")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {

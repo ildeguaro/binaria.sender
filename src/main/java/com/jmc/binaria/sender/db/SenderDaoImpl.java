@@ -13,9 +13,8 @@ public class SenderDaoImpl implements SenderDao {
 
 	public Sender createSender(Sender sender) {
 		try {
-			
+
 			if (this.findByName(sender.getName()) == null) {
-				
 				Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
 				String sql = "insert into " + TABLE_NAME + " (name, uri) VALUES (:name, :uri)";
 				conn.createQuery(sql).addParameter("name", sender.getName()).addParameter("uri", sender.getUriAccess())
@@ -73,5 +72,23 @@ public class SenderDaoImpl implements SenderDao {
 			e.printStackTrace();
 		}
 		return next;
+	}
+
+	public boolean delete(Sender sender) {
+		boolean result = false;
+		try {
+
+			Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
+			String sql = "delete from " + TABLE_NAME + " where name = :name";
+			conn.createQuery(sql).addParameter("name", sender.getName()).executeUpdate();
+			conn.commit();
+
+			System.out.println(sql);
+			result = true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }
