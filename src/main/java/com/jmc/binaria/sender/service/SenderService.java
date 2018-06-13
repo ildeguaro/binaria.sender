@@ -36,5 +36,9 @@ public class SenderService {
 	public boolean killme(Sender sender) {
 		return senderDao.delete(sender);
 	}
+	
+	public Sender senderByName(String name) {
+		return senderDao.findByName(name);
+	}
 
 }

@@ -16,13 +16,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.Sender;
+import com.jmc.binaria.sender.model.SmtpSettings;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
 import com.jmc.binaria.sender.service.BinariaSenderService;
 import com.jmc.binaria.sender.service.SenderService;
+import com.jmc.binaria.sender.util.SenderWorker;
+
 //import com.jmc.binaria.sender.util.RunTask;
 import org.codehaus.jackson.map.ObjectMapper;
 import com.google.gson.Gson;
@@ -46,6 +50,8 @@ public class App {
 	public static void main(String[] args) throws InterruptedException, UnknownHostException {
 
 		final ThymeleafTemplateEngine engineView = new ThymeleafTemplateEngine();
+		
+		final SmtpSettings smtpSettings = new SmtpSettings();
 
 		service = new BinariaSenderService();
 		senderService = new SenderService();
@@ -58,6 +64,11 @@ public class App {
 
 		String uriApiBase = "/" + sender.getName() + API_PATH;
 		
+		/******************************************************************/
+		final SenderWorker worker = new SenderWorker(sender);
+		Timer timer = new Timer();
+		timer.schedule(worker, 1000, 2000);
+		/******************************************************************/
 
 		/**********************************
 		 * Home *
@@ -159,6 +170,9 @@ public class App {
 				System.out.println("POST : " + rqst.contentType());
 				System.out.println("POST : " + rqst.body());
 				SendEmailPayload payload = objectMapper.readValue(rqst.body(), SendEmailPayload.class);
+				
+				worker.setSmtpSettings(payload.getSmtpValues());
+				
 				Campaign campaign = service.createEmailCampaign(payload);
 				if (campaign != null)
 					rspns.status(200);
@@ -176,6 +190,8 @@ public class App {
 		//
 		// Timer timer = new Timer();
 		// timer.schedule(task, 1000, 2000);
+		
+		
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override

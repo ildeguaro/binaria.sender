@@ -10,7 +10,7 @@ public class Customer {
   
   private FtpSettings ftpSettings;
   
-  private SmtpSettigs smtSettings;
+  private SmtpSettings smtSettings;
 
   public int getId() {
     return id;
@@ -44,11 +44,11 @@ public class Customer {
     this.ftpSettings = ftpSettings;
   }
 
-  public SmtpSettigs getSmtSettings() {
+  public SmtpSettings getSmtSettings() {
     return smtSettings;
   }
 
-  public void setSmtSettings(SmtpSettigs smtSettings) {
+  public void setSmtSettings(SmtpSettings smtSettings) {
     this.smtSettings = smtSettings;
   }
   

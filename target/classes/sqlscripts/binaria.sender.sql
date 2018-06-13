@@ -28,21 +28,23 @@ CREATE TABLE sender_email_campaign(
   response varchar(512) NULL DEFAULT NULL,
   error varchar(512) DEFAULT NULL,  
   fields_search varchar(1024) NULL DEFAULT NULL,  
+  sender_assigned_id bigint(20),
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+CREATE TABLE sender_senders(
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  name varchar(125), 
+  uri  varchar(125), 
+  assignation_type varchar(125) NULL DEFAULT 'ANY', -- TO_ME OR ANY
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE sender_events(
   id bigint(20) NOT NULL AUTO_INCREMENT,
   sender_id bigint(20),  
   event_date timestamp NULL DEFAULT NULL,  
   event varchar(512) NULL DEFAULT NULL,  
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE sender_senders(
-  id bigint(20) NOT NULL AUTO_INCREMENT,
-  name varchar(125), 
-  uri  varchar(125), 
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

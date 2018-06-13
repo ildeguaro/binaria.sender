@@ -2,7 +2,7 @@ package com.jmc.binaria.sender.model;
 
 import java.util.Map;
 
-public class SmtpSettigs {
+public class SmtpSettings {
   
   private String hostname;
   

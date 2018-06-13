@@ -16,9 +16,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		try {
 			Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
 			conn.createQuery("insert into " + TABLE_NAME
-					+ " (sender_campaigns_id,addresses,names,package_id,document_id,attachment_path,content_email,fields_search,sender_id)"
+					+ " (sender_campaigns_id,addresses,names,package_id,document_id,attachment_path,content_email,fields_search)"
 					+ " VALUES (:sender_campaigns_id, :addresses, :names, :package_id, :document_id, :attachment_path,"
-					+ " :content_email, :fields_search, :sender_id)")
+					+ " :content_email, :fields_search)")
 
 					.addParameter("sender_campaigns_id", ec.getCampaignId())
 					.addParameter("addresses", ec.getAddresses()).addParameter("names", ec.getNames())
@@ -26,7 +26,6 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addParameter("attachment_path", ec.getAttachmentPath())
 					.addParameter("content_email", ec.getContentEmail())
 					.addParameter("fields_search", ec.getFieldsSearch())
-					.addParameter("sender_id", ec.getSenderId())
 					.executeUpdate();
 			conn.commit();
 
@@ -40,9 +39,10 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		try {
 			Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
 			conn.createQuery("update " + TABLE_NAME
-					+ " set sending_date = now(), sent = :sent, response = :response, error = :error")
+					+ " set sending_date = now(), sent = :sent, response = :response, error = :error, sender_id = :senderId")
 					.addParameter("sent", ec.isWasSent()).addParameter("response", ec.getResponse())
 					.addParameter("error", ec.getError())
+					.addParameter("senderId", ec.getSenderId())
 					.executeUpdate();
 			conn.commit();
 
@@ -57,12 +57,14 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		return null;
 	}
 
-	public List<EmailCampaign> selectEmailToSend(long ordenId, int quantity, int senderId) {
+	public List<EmailCampaign> selectEmailToSend(int quantity, int senderId) {
 		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
 
 		try {
 			Connection conn = Sql2Connection.getSql2oConnetion().open();
-			result = conn.createQuery("select * from " + TABLE_NAME + " where sent = 0 ")
+			String sql = "select * from " + TABLE_NAME + " where sender_id = "+senderId+" and sent = 0 ";
+			System.out.println(sql);
+			result = conn.createQuery(sql)					
 					.addColumnMapping("sender_campaigns_id", "campaignId")
 					.addColumnMapping("package_id", "packageId")
 					.addColumnMapping("document_id", "documentId")
@@ -71,6 +73,8 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sending_date", "sendingDate")
 					.addColumnMapping("sent", "wasSent")
 					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
@@ -102,6 +106,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName")
 					.addColumnMapping("creation_date", "campaignDate")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
@@ -133,6 +138,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName")
 					.addColumnMapping("creation_date", "campaignDate")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
@@ -164,6 +170,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName")
 					.addColumnMapping("creation_date", "campaignDate")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
@@ -195,6 +202,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName")
 					.addColumnMapping("creation_date", "campaignDate")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
@@ -259,12 +267,68 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName")
 					.addColumnMapping("creation_date", "campaignDate")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	public EmailCampaign selectEmailToSendAssigned(int senderId) {
+		EmailCampaign result = null;
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select * from " + TABLE_NAME + " where sender_assigned_id = "+senderId+" and sent = 0 ";
+			System.out.println(sql);
+			result = conn.createQuery(sql)					
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.executeScalar(EmailCampaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public EmailCampaign selectEmailToSendNoAssigned() {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+
+		try {
+			Connection conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select * from " + TABLE_NAME + " where sent = 0 and error is null ";
+			System.out.println(sql);
+			result = conn.createQuery(sql)					
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.executeAndFetch(EmailCampaign.class);
+			
+			if (result != null && !result.isEmpty())
+				return result.get(0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -28,12 +28,33 @@ public class SenderDaoImpl implements SenderDao {
 		return sender;
 	}
 
+	public Sender createSenderWithAssignation(Sender sender) {
+		try {
+
+			if (this.findByName(sender.getName()) == null) {
+				Connection conn = Sql2Connection.getSql2oConnetion().beginTransaction();
+				String sql = "insert into " + TABLE_NAME
+						+ " (name, uri, assignation_type) VALUES (:name, :uri, :assignation_type)";
+				conn.createQuery(sql).addParameter("name", sender.getName()).addParameter("uri", sender.getUriAccess())
+						.addParameter("assignation_type", sender.getAsignationType()).executeUpdate();
+				conn.commit();
+				System.out.println(sql);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sender;
+	}
+
 	public List<Sender> findAll() {
 		List<Sender> result = new ArrayList<Sender>();
 		try {
 			String sql = "select * from " + TABLE_NAME;
 			Connection conn = Sql2Connection.getSql2oConnetion().open();
-			result = conn.createQuery(sql).executeAndFetch(Sender.class);
+			result = conn.createQuery(sql)
+					.addColumnMapping("uri", "uriAccess")
+					.addColumnMapping("assignation_type", "asignationType")
+					.executeAndFetch(Sender.class);
 			System.out.println(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -47,7 +68,9 @@ public class SenderDaoImpl implements SenderDao {
 			String sql = "select * from " + TABLE_NAME + " where name = :name ";
 			List<Sender> result = new ArrayList<Sender>();
 			Connection conn = Sql2Connection.getSql2oConnetion().open();
-			result = conn.createQuery(sql).addParameter("name", name).addColumnMapping("uri", "uriAccess")
+			result = conn.createQuery(sql).addParameter("name", name)
+					.addColumnMapping("uri", "uriAccess")
+					.addColumnMapping("assignation_type", "asignationType")
 					.executeAndFetch(Sender.class);
 			System.out.println(sql);
 			if (result != null && !result.isEmpty())
@@ -91,4 +114,5 @@ public class SenderDaoImpl implements SenderDao {
 		}
 		return result;
 	}
+
 }

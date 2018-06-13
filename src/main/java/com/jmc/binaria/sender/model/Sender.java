@@ -2,11 +2,18 @@ package com.jmc.binaria.sender.model;
 
 public class Sender {
 	
+	public static String ASSIGN_TO_ME = "TO_ME";
+	
+	public static String ASSIGN_ANY = "ANY";
+	
 	private int id;
 	
 	private String name;
 	
 	private String uriAccess;
+	
+	private String asignationType;
+	
 
 	public int getId() {
 		return id;
@@ -30,6 +37,14 @@ public class Sender {
 
 	public void setUriAccess(String uriAccess) {
 		this.uriAccess = uriAccess;
+	}
+
+	public String getAsignationType() {
+		return asignationType;
+	}
+
+	public void setAsignationType(String asignationType) {
+		this.asignationType = asignationType;
 	}
 
 }

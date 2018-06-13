@@ -1,13 +1,13 @@
 package com.jmc.binaria.sender.model.api;
 
 import com.jmc.binaria.sender.model.FtpSettings;
-import com.jmc.binaria.sender.model.SmtpSettigs;
+import com.jmc.binaria.sender.model.SmtpSettings;
 
 public class SendEmailPayload {
 	
 	private FtpSettings ftpValues;
 	
-	private SmtpSettigs smtpValues;
+	private SmtpSettings smtpValues;
 	
 	private String[] packagesName;
 	
@@ -25,11 +25,11 @@ public class SendEmailPayload {
 		this.ftpValues = ftpValues;
 	}
 
-	public SmtpSettigs getSmtpValues() {
+	public SmtpSettings getSmtpValues() {
 		return smtpValues;
 	}
 
-	public void setSmtpValues(SmtpSettigs smtpValues) {
+	public void setSmtpValues(SmtpSettings smtpValues) {
 		this.smtpValues = smtpValues;
 	}
 

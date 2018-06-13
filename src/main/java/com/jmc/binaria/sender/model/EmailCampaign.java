@@ -37,6 +37,8 @@ public class EmailCampaign {
 	private String campaignName;
 	
 	private Date campaignDate;
+	
+	private int senderIdAssinged;
 
 	public String getId() {
 		return id;
