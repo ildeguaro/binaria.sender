@@ -21,9 +21,11 @@ import java.util.Timer;
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.Sender;
+import com.jmc.binaria.sender.model.User;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
 import com.jmc.binaria.sender.service.BinariaSenderService;
 import com.jmc.binaria.sender.service.SenderService;
+import com.jmc.binaria.sender.service.UserService;
 import com.jmc.binaria.sender.util.SenderWorker;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -42,8 +44,12 @@ public class App {
 	private static BinariaSenderService service;
 
 	private static SenderService senderService;
+	
+	private static UserService userService;
 
 	private static Sender sender;
+	
+	private static HashMap<String, Object> mapLogin = new HashMap<String, Object>();
 
 	public static void main(String[] args) throws InterruptedException, NumberFormatException, IOException {
 
@@ -51,6 +57,7 @@ public class App {
 		
 		service = new BinariaSenderService();
 		senderService = new SenderService();
+		userService = new UserService();
 		objectMapper = new ObjectMapper();
 		int portBase  = Integer.parseInt(App.getPropertiesApp().getProperty("app.port-base"));
 		long customerId  = Long.parseLong(App.getPropertiesApp().getProperty("app.client-id"));		
@@ -71,11 +78,32 @@ public class App {
 		/**********************************
 		 * Home *
 		 **********************************/
-		get("/" + sender.getName() + "/", new Route() {
-			public String handle(Request rqst, Response rspns) throws Exception {
-				Map<String, String> varables = new HashMap<String, String>();
+		get("/" + sender.getName() + "/:hash", new Route() {
+			public String handle(Request rqst, Response rspns) throws Exception {				
+				String hash = rqst.params(":hash");
+				Map<String, Object> varables = new HashMap<String, Object>();
 				varables.put("instance", ":"+port()+"/"+sender.getName());
-				return engineView.render(new ModelAndView(varables, "home"));
+				String view ="home";				
+				return App.interceptorLogin(hash,varables,view);
+			}
+		});
+		post("/" + sender.getName() + "/login", new Route() {
+			public String handle(Request rqst, Response rspns) throws Exception {
+				String login = rqst.queryParams("login");
+				String password = rqst.queryParams("password");
+				Map<String, Object> varables = new HashMap<String, Object>();
+				if (login==null)
+					login = "";
+				if (password==null)
+					password ="";
+				User user = userService.autenticar(login, password);
+				if (user!=null) {
+					mapLogin.put(user.getPassword(), user);
+					varables.put("user", user);
+					rspns.redirect(user.getPassword());
+				}		
+				rspns.redirect("13132132");
+				return "/" + sender.getName() + "/login";
 			}
 		});
 		
@@ -83,13 +111,15 @@ public class App {
 		/**********************************
 		 * Busqueda Basica *
 		 **********************************/
-		get("/" + sender.getName() + "/busqueda-basica", new Route() {
+		get("/" + sender.getName() + "/busqueda-basica/:hash", new Route() {
 			public String handle(Request rqst, Response rspns) throws Exception {
+				String hash = rqst.params(":hash");
 				List<Campaign> campaigns = service.getAllCampaign();
 				Map<String, Object> variables = new HashMap<String, Object>();
 				variables.put("ordenes",campaigns);
 				variables.put("instance", sender.getName());
-				return engineView.render(new ModelAndView(variables, "busqueda-basica"));
+				String view ="busqueda-basica";				
+				return App.interceptorLogin(hash,variables,view);
 			}
 		});
 		
@@ -107,8 +137,10 @@ public class App {
 		/**********************************
 		 * Buscar en envio *
 		 **********************************/
-		get("/" + sender.getName() + "/find", new Route() {
+		get("/" + sender.getName() + "/find/:hash", new Route() {
 			public String handle(Request rqst, Response rspns) throws Exception {
+				String hash = rqst.params(":hash");
+
 				String words = rqst.queryParams("words");
 				String ordenIdString = rqst.queryParams("ordenId");
 				String email = rqst.queryParams("email");
@@ -141,7 +173,10 @@ public class App {
 				variables.put("email", email);
 				variables.put("words", words);
 				variables.put("name", name);
-				return engineView.render(new ModelAndView(variables, "busqueda-basica"));
+				
+				String view ="busqueda-basica";				
+				return App.interceptorLogin(hash,variables,view);
+				
 			}
 		});
 
@@ -204,6 +239,23 @@ public class App {
 		Properties props = new Properties();
 		props.load(s);
 		return props;
+	}
+	
+	public static String interceptorLogin(String hash, Map<String, Object> variables, String view) {
+		if (hash==null)
+			return new ThymeleafTemplateEngine()
+					.render(new ModelAndView(new HashMap<String, String>(), "login"));
+		User user =  (User) mapLogin.get(hash);
+		if (user==null)
+			return new ThymeleafTemplateEngine()
+				.render(new ModelAndView(new HashMap<String, String>(), "login"));
+		else {			
+			variables.put("user",user);
+			return new ThymeleafTemplateEngine().render(new ModelAndView(variables,view));
+		}
+		
+		
+		
 	}
 	
 	

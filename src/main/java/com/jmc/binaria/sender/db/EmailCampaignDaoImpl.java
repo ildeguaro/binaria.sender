@@ -262,7 +262,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 	}
 
 	public EmailCampaign selectEmailToSendAssigned(int senderId) {
-		EmailCampaign result = null;
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
 		Connection conn = null;
 		try {
 			conn = Sql2Connection.getSql2oConnetion().open();
@@ -274,7 +274,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("content_email", "contentEmail").addColumnMapping("sending_date", "sendingDate")
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeScalar(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+			if (result != null && !result.isEmpty())
+				return result.get(0);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -282,7 +284,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 			if (conn != null)
 				conn.close();
 		}
-		return result;
+		return null;
 	}
 
 	public EmailCampaign selectEmailToSendNoAssigned() {
