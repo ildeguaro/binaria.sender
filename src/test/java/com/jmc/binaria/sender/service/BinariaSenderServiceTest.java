@@ -51,14 +51,7 @@ public class BinariaSenderServiceTest {
 		Campaign campaign = service.createEmailCampaign(payload);
 		assertNotNull(campaign);		
 	}
-	@Ignore
-	@Test
-	public void getEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		
-		service.getEmailCampaignByFields("MYO");
-		//assertNotNull(campaign);		
-	}
-	
 	@Ignore
 	@Test
 	public void getEmailCampaignBasicOnlyOrdenId() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		

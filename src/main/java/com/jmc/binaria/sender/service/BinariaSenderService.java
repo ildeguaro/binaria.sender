@@ -20,7 +20,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BinariaSenderService {
+	
+	Logger logger = LoggerFactory.getLogger(BinariaSenderService.class);
+
 
 	private Properties props;
 
@@ -39,23 +45,13 @@ public class BinariaSenderService {
 
 	public Campaign createEmailCampaign(SendEmailPayload payload) throws IOException, InterruptedException {
 		this.ftpSettings = payload.getFtpValues();
-		props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", payload.getSmtpValues().getHostname());
-		props.put("mail.smtp.port", payload.getSmtpValues().getPort());
-		props.put("mail.smtp.user", payload.getSmtpValues().getUsername());
-		props.put("mail.smtp.psw", payload.getSmtpValues().getPassword());
-		props.put("mail.smtp.ssl.enable", "true");
-
-		System.out.println("Properties Sendemail : " + props);
 
 		List<File> listaPaqueteArchivos = new ArrayList<File>();
 
 		List<String> listaDeNombreDePaquetes = new ArrayList<String>();
 		listaDeNombreDePaquetes.addAll(Arrays.asList(payload.getPackagesName()));
 		File paquetePdf = null;
-		System.out.println("OBTENIENDO PAQUETES DE FTP");
+		logger.info("OBTENIENDO PAQUETES DE FTP");
 		FTPUtils.conectar(ftpSettings.getHost(), Integer.parseInt(ftpSettings.getPort()), ftpSettings.getUsername(),
 				ftpSettings.getPassword());
 		for (String elemento : listaDeNombreDePaquetes) {
@@ -63,7 +59,7 @@ public class BinariaSenderService {
 			listaPaqueteArchivos.add(paquetePdf);
 		}
 		FTPUtils.desconectar();
-		System.out.println(" REALIZADO OBTENCION PAQUETES DE FTP ");
+		logger.info(" REALIZADO OBTENCION PAQUETES DE FTP ");
 
 		
 		Campaign campaing;
@@ -71,8 +67,8 @@ public class BinariaSenderService {
 		customer.setId(payload.getCustomerId());
 		String nameCampaig = payload.getEmailDescription();
 		Long ordenImpresionId = Long.parseLong(payload.getOrdenImpresionId());
-		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId,payload.getSmtpValues().getBody());
-		System.out.println(" SEPARANDO PDF DE PAQUETES ");
+		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId,payload.getEmailTemplate());
+		logger.info(" SEPARANDO PDF DE PAQUETES ");
 		for (File arch : listaPaqueteArchivos) {
 			String dir = "/tmp/PAQUETE_" + arch.getName().replace(".pdf", "");
 			BinariaUtil.separarDocumentos(arch, dir);
@@ -125,14 +121,7 @@ public class BinariaSenderService {
 		}
 	}
 	
-	public List<EmailCampaign> getEmailCampaignByFields(String words) {
-		return emailCampaignDao.findEmailCampaignByFields(words);
-	}
-	
-	public List<EmailCampaign> getEmailCampaignByOrdenId(long ordenId) {
-		return emailCampaignDao.findEmailCampaignByOrdenId(ordenId);
-	}
-	
+		
 	public List<Campaign> getAllCampaign(){
 		return campaignDao.allCampaign();
 	}

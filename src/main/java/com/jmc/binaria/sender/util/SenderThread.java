@@ -67,7 +67,6 @@ public class SenderThread {
 		String direccion;
 		String nombreDestinatario;
 		String id;
-		double k = 1;
 		byte[] pdfArray = null;
 
 		sti = new StringTokenizer(adjunto.getName(), "|");
@@ -111,9 +110,8 @@ public class SenderThread {
 				//cadenaHeader.append(subDominio);
 
 				contenidoHtml = contenidoHtml.replace("[sunombre]", nombre);
-				logger.info(" T : {}", t);
+				
 				t = JavaMailManager.conectarSMTP(props, debug);
-				logger.info(" T : ", t);
 				message = JavaMailManager.crearMensaje(contenidoHtml, de, nombre + " " + asunto);
 				logger.info(" Message : ", message);
 				if (direccion.contains(";")) {

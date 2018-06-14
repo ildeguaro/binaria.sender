@@ -14,13 +14,14 @@ public class SenderService {
 		this.senderDao = new SenderDaoImpl();
 	}
 	
-	public Sender registraMe(String host, int portBase) {
+	public Sender registraMe(String host, int portBase, long customerId) {
 		port = portBase+this.senderDao.nextSenderId()+1;	
 		String name = "binaria.sender." + (this.senderDao.nextSenderId()+1);
 		Sender sender = new Sender();	
 		sender.setName(name);
 		String uri = "http://"+host+":"+port+"/"+sender.getName()+"/";		
 		sender.setUriAccess(uri);
+		sender.setCustomerId(customerId);
 		sender = senderDao.createSender(sender);		
 		return sender;
 	}

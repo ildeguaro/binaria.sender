@@ -14,6 +14,11 @@ public class Sender {
 	
 	private String asignationType;
 	
+	private long customerId;
+	
+	private boolean enabled;
+	
+	private boolean debug;	
 
 	public int getId() {
 		return id;
@@ -45,6 +50,30 @@ public class Sender {
 
 	public void setAsignationType(String asignationType) {
 		this.asignationType = asignationType;
+	}
+
+	public long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(long customerId) {
+		this.customerId = customerId;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 }

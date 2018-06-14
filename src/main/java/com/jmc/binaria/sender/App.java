@@ -8,26 +8,24 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import static spark.Spark.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-//import java.util.Timer;
-//import java.util.TimerTask;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Timer;
 
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.Sender;
-import com.jmc.binaria.sender.model.SmtpSettings;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
 import com.jmc.binaria.sender.service.BinariaSenderService;
 import com.jmc.binaria.sender.service.SenderService;
 import com.jmc.binaria.sender.util.SenderWorker;
 
-//import com.jmc.binaria.sender.util.RunTask;
 import org.codehaus.jackson.map.ObjectMapper;
 import com.google.gson.Gson;
 
@@ -47,17 +45,16 @@ public class App {
 
 	private static Sender sender;
 
-	public static void main(String[] args) throws InterruptedException, UnknownHostException {
+	public static void main(String[] args) throws InterruptedException, NumberFormatException, IOException {
 
 		final ThymeleafTemplateEngine engineView = new ThymeleafTemplateEngine();
 		
-		final SmtpSettings smtpSettings = new SmtpSettings();
-
 		service = new BinariaSenderService();
 		senderService = new SenderService();
 		objectMapper = new ObjectMapper();
-
-		sender = senderService.registraMe(InetAddress.getLocalHost().getHostAddress(), 1150);
+		int portBase  = Integer.parseInt(App.getPropertiesApp().getProperty("app.port-base"));
+		long customerId  = Long.parseLong(App.getPropertiesApp().getProperty("app.client-id"));		
+		sender = senderService.registraMe(InetAddress.getLocalHost().getHostAddress(), portBase, customerId);
 		port(senderService.getPort());
 
 		staticFiles.location("/templates");
@@ -65,6 +62,7 @@ public class App {
 		String uriApiBase = "/" + sender.getName() + API_PATH;
 		
 		/******************************************************************/
+		
 		final SenderWorker worker = new SenderWorker(sender);
 		Timer timer = new Timer();
 		timer.schedule(worker, 1000, 2000);
@@ -169,10 +167,7 @@ public class App {
 
 				System.out.println("POST : " + rqst.contentType());
 				System.out.println("POST : " + rqst.body());
-				SendEmailPayload payload = objectMapper.readValue(rqst.body(), SendEmailPayload.class);
-				
-				worker.setSmtpSettings(payload.getSmtpValues());
-				
+				SendEmailPayload payload = objectMapper.readValue(rqst.body(), SendEmailPayload.class);			
 				Campaign campaign = service.createEmailCampaign(payload);
 				if (campaign != null)
 					rspns.status(200);
@@ -202,6 +197,13 @@ public class App {
 					System.out.println(sender.getName()+" says : Can not killme :)");
 			}
 		});
+	}
+	
+	public static Properties getPropertiesApp() throws IOException {	
+		InputStream s = App.class.getResourceAsStream("/config.properties");
+		Properties props = new Properties();
+		props.load(s);
+		return props;
 	}
 	
 	

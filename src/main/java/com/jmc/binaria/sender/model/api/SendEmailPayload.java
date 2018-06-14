@@ -1,17 +1,16 @@
 package com.jmc.binaria.sender.model.api;
 
 import com.jmc.binaria.sender.model.FtpSettings;
-import com.jmc.binaria.sender.model.SmtpSettings;
 
 public class SendEmailPayload {
 	
-	private FtpSettings ftpValues;
+	private int customerId;
 	
-	private SmtpSettings smtpValues;
+	private FtpSettings ftpValues;
 	
 	private String[] packagesName;
 	
-	private int customerId;
+	private String emailTemplate;
 	
 	private String ordenImpresionId;
 	
@@ -23,14 +22,6 @@ public class SendEmailPayload {
 
 	public void setFtpValues(FtpSettings ftpValues) {
 		this.ftpValues = ftpValues;
-	}
-
-	public SmtpSettings getSmtpValues() {
-		return smtpValues;
-	}
-
-	public void setSmtpValues(SmtpSettings smtpValues) {
-		this.smtpValues = smtpValues;
 	}
 
 	public String[] getPackagesName() {
@@ -64,6 +55,14 @@ public class SendEmailPayload {
 
 	public void setEmailDescription(String emailDescription) {
 		this.emailDescription = emailDescription;
+	}
+
+	public String getEmailTemplate() {
+		return emailTemplate;
+	}
+
+	public void setEmailTemplate(String emailTemplate) {
+		this.emailTemplate = emailTemplate;
 	}
 
 }
