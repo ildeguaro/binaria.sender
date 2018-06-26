@@ -40,7 +40,7 @@
 					data-original-title="Toggle Navigation"></div>
 			</div>
 			<!--logo start-->
-			<a href="" class="logo"><b>Binaria Sender Admin</b></a>
+			<a th:href="${instance+hash}" class="logo"><b>Binaria Sender Admin</b></a>
 			<!--logo end-->
 			<div class="nav notify-row" id="top_menu"></div>
 			<div class="top-menu">
@@ -60,24 +60,22 @@
 				<!-- sidebar menu start-->
 				<ul class="sidebar-menu" id="nav-accordion">
 
-					<li class="mt"><a class="active" href=""> <i
-							class="fa fa-dashboard"></i> <span>Dashboard</span>
+					<p class="centered">
+						<a href="profile.html"><img src="/assets/img/android.png"
+							class="img-circle" width="60"></a>
+					</p>
+					<h5 class="centered" th:if="${user!=null}" th:text="${user.firstname + ' - ' + user.lastname} ">Marcel Newman</h5>
+
+					<li class="mt"><a class="active" th:href="${instance+hash}"> <i
+							class="fa fa-dashboard"></i> <span >Dashboard</span>
 					</a></li>
 
 
 					<li class="sub-menu"><a href="javascript:;"> <i
-							class="fa fa-th"></i> <span>Busqueda</span>
+							class="fa fa-th"></i> <span >Busqueda</span>
 					</a>
 						<ul class="sub">
-							<li><a href="busqueda-basica">Basica</a></li>
-							<li><a href="busqueda-avanzada">Avanzada</a></li>
-						</ul></li>
-					<li class="sub-menu"><a href="javascript:;"> <i
-							class=" fa fa-bar-chart-o"></i> <span>Reportes</span>
-					</a>
-						<ul class="sub">
-							<li><a href="morris.html">Morris</a></li>
-							<li><a href="chartjs.html">Chartjs</a></li>
+							<li><a th:href="${instance+'busqueda-basica/'+hash}">Basica</a></li>
 						</ul></li>
 
 				</ul>
@@ -101,8 +99,9 @@
 						<div class="form-panel">
 							<h4 class="mb">Busqueda de Envios</h4>
 
-							<form class="form-horizontal style-form" role="form" action="#"
-								th:action="@{find}+'/'+${user.password}" method="GET">
+							<form class="form-horizontal style-form" role="form"  method="GET">
+								
+								<input type="hidden" name="uuid" th:value="${hash}" />
 
 								<div class="form-group">
 									<label class="col-sm-2 control-label col-md-2">Orden de

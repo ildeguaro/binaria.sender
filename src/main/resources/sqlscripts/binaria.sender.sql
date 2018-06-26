@@ -6,7 +6,7 @@ CREATE TABLE sender_campaigns (
   customer_id bigint(20) DEFAULT NULL,
   orden_impresion_id bigint(20) DEFAULT NULL,
   creation_date timestamp NULL DEFAULT NULL,
-  html_template varchar(2048) NOT NULL,
+  html_template LONGTEXT NOT NULL,
   sending_begin timestamp NULL DEFAULT NULL,
   sending_end timestamp NULL DEFAULT NULL,
   sending_duration int(11) DEFAULT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE sender_email_campaign(
   package_id varchar(256) NULL, 
   document_id bigint(20) NULL,
   attachment_path varchar(1024) NOT NULL,
-  content_email varchar(2048) NOT NULL,
+  content_email LONGTEXT NOT NULL,
   sending_date timestamp NULL DEFAULT NULL,
   sender_id bigint(20) NULL DEFAULT NULL,
   sent tinyint(1) NOT NULL DEFAULT 0,
@@ -43,6 +43,7 @@ CREATE TABLE sender_senders(
   customer_id bigint(20) DEFAULT NULL,
   enabled tinyint(1) NOT NULL DEFAULT 0,
   debug tinyint(1) NOT NULL DEFAULT 0,
+  pid  varchar(10) NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

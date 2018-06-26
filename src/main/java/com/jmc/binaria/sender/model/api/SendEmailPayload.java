@@ -10,7 +10,7 @@ public class SendEmailPayload {
 	
 	private String[] packagesName;
 	
-	private String emailTemplate;
+	private String emailTemplateBase64;
 	
 	private String ordenImpresionId;
 	
@@ -49,20 +49,20 @@ public class SendEmailPayload {
 		this.ordenImpresionId = ordenImpresionId;
 	}
 
+	public String getEmailTemplateBase64() {
+		return emailTemplateBase64;
+	}
+
+	public void setEmailTemplateBase64(String emailTemplateBase64) {
+		this.emailTemplateBase64 = emailTemplateBase64;
+	}
+
 	public String getEmailDescription() {
 		return emailDescription;
 	}
 
 	public void setEmailDescription(String emailDescription) {
 		this.emailDescription = emailDescription;
-	}
-
-	public String getEmailTemplate() {
-		return emailTemplate;
-	}
-
-	public void setEmailTemplate(String emailTemplate) {
-		this.emailTemplate = emailTemplate;
 	}
 
 }

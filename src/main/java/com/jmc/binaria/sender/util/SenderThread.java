@@ -38,11 +38,13 @@ public class SenderThread {
 	private String nombreAdjunto;
 	private boolean debug;
 	private String name;
+	private String direccion;
 
-	public SenderThread(Properties props, Integer idThread, String de, String asunto, String contenidoHtml,
+	public SenderThread(Properties props, Integer idThread, String direccion, String de, String asunto, String contenidoHtml,
 			String nombreAdjunto, String producto, String rutaAdjunto, boolean debug) throws InterruptedException {
 		this.producto = producto;
 		this.idThread = idThread;
+		this.direccion= direccion;
 		this.de = de;
 		this.asunto = asunto;
 		this.contenidoHtmlTemplate = contenidoHtml;
@@ -64,17 +66,16 @@ public class SenderThread {
 		File adjunto = new File(rutaAdjunto);
 		StringTokenizer sti = null;
 
-		String direccion;
+		
 		String nombreDestinatario;
 		String id;
 		byte[] pdfArray = null;
 
 		sti = new StringTokenizer(adjunto.getName(), "|");
 		id = sti.nextToken();
-		direccion = sti.nextToken();
+		sti.nextToken();
 		nombreDestinatario = sti.nextToken();
 		String contenidoHtml = contenidoHtmlTemplate;
-		logger.info("Contenido html En Sender {} ", contenidoHtml);
 		try {
 
 			/*****************************************/
@@ -89,7 +90,6 @@ public class SenderThread {
 				String value = splitedString[1].replace("}", "");
 				contenidoHtml = contenidoHtml.replace(key, value);
 			}
-			logger.info(" Body {}: ", contenidoHtml);
 			MimeMessage message = null;
 
 			if (direccion != null || direccion != "null") {
@@ -106,14 +106,11 @@ public class SenderThread {
 				} else if (!direccion.contains(";") || !direccion.contains(",")) {
 					//cadenaHeader.append(direccion.replace("@", "="));
 				}
-				//cadenaHeader.append("@");
-				//cadenaHeader.append(subDominio);
-
+	
 				contenidoHtml = contenidoHtml.replace("[sunombre]", nombre);
 				
 				t = JavaMailManager.conectarSMTP(props, debug);
 				message = JavaMailManager.crearMensaje(contenidoHtml, de, nombre + " " + asunto);
-				logger.info(" Message : ", message);
 				if (direccion.contains(";")) {
 					for (String str : direccion.split(";")) {
 						message.setRecipient(Message.RecipientType.TO, new InternetAddress(str));

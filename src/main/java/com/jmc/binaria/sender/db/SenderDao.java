@@ -17,4 +17,6 @@ public interface SenderDao {
 	public List<Sender> findAll();
 	
 	public boolean delete(Sender sender); 
+	
+	public boolean existsMainSender();
 }

@@ -47,12 +47,12 @@
 					data-original-title="Toggle Navigation"></div>
 			</div>
 			<!--logo start-->
-			<a href="index.html" class="logo"><b>Binaria Sender Admin</b></a>
+			<a  th:href="${instance+hash}" class="logo"><b>Binaria Sender Admin</b></a>
 			<!--logo end-->
 			<div class="nav notify-row" id="top_menu"></div>
 			<div class="top-menu">
 				<ul class="nav pull-right top-menu">					
-					<li><a class="logout" href="${instance}">Logout</a></li>
+					<li><a class="logout" href="logout">Logout</a></li>
 				</ul>
 			</div>
 		</header>
@@ -73,7 +73,7 @@
 					</p>
 					<h5 class="centered" th:if="${user!=null}" th:text="${user.firstname + ' - ' + user.lastname} ">Marcel Newman</h5>
 
-					<li class="mt"><a class="active" th:href="${user.password}"> <i
+					<li class="mt"><a class="active" th:href="${instance+hash}"> <i
 							class="fa fa-dashboard"></i> <span >Dashboard</span>
 					</a></li>
 
@@ -82,7 +82,7 @@
 							class="fa fa-th"></i> <span >Busqueda</span>
 					</a>
 						<ul class="sub">
-							<li><a th:href="${'busqueda-basica/'+user.password}">Basica</a></li>
+							<li><a th:href="${instance+'busqueda-basica/'}">Basica</a></li>
 						</ul></li>
 
 				</ul>

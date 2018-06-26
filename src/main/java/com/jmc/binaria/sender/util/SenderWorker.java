@@ -56,14 +56,15 @@ public class SenderWorker extends TimerTask {
 			else
 				email = emailCampaignService.selectEmailCampaignToSendAssigned(sender);
 			if (email != null) {
+				email.setSenderId(sender.getId());
+				emailCampaignService.updateSending(email);
 				logger.info("{} : encontrado {} para enviar", this.sender.getName(), email.getAddresses());
 				try {
-					if (new SenderThread(this.props, 1, smtpSettings.getFrom(), smtpSettings.getSubject(),
+					if (new SenderThread(this.props, 1, email.getAddresses(), smtpSettings.getFrom(), smtpSettings.getSubject(),
 							email.getContentEmail(), smtpSettings.getAttachmenName(), email.getCampaignName(),
 							email.getAttachmentPath(), this.sender.isDebug()).send());
 
-					logger.info("Contenido html al Sender {} ", email.getContentEmail());
-					logger.info("{} : enviado correctamente a {}", this.sender.getName(), email.getNames());
+					logger.info("{} : enviado correctamente a {}", this.sender.getName(), email.getAddresses());
 					email.setWasSent(true);
 
 				} catch (Exception e) {
@@ -73,7 +74,7 @@ public class SenderWorker extends TimerTask {
 					logger.error("{} : error intentando enviar  a: {}. Causa:  ", this.sender.getName(),
 							email.getAddresses(), e.getCause());
 				}
-				email.setSenderId(sender.getId());
+				
 				emailCampaignService.updateSending(email);
 
 			}

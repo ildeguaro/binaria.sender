@@ -28,23 +28,15 @@ public class BinariaSenderServiceTest {
 			"    \"port\": \"21\",\n" + 
 			"    \"username\": \"ftpuser\",\n" + 
 			"    \"password\": \"123456\"\n" + 
-			"  },\n" + 
-			"  \"smtpValues\": {\n" + 
-			"    \"hostname\": \"hostname\",\n" + 
-			"    \"port\": \"8142\",\n" + 
-			"    \"username\": \"username\",\n" + 
-			"    \"password\": \"password\",\n" + 
-			"    \"from\": \"from\",\n" + 
-			"    \"subject\": \"subject\",\n" + 
-			"    \"body\": \"<body>[cuenta] y [saldoinicial] tambien [saldofinal] con emision [fechaemision] debes pagar [fechamaxpago]</body>\",\n" + 
-			"    \"attachmenName\": \"SuEdoCuenta\"\n" + 
-			"  },\n" + 
+			"  },  \n" + 
+			"  \"emailTemplateBase64\": \"PGJvZHk+W2N1ZW50YV0geSBbc2FsZG9pbmljaWFsXSB0YW1iaWVuIFtzYWxkb2ZpbmFsXSBjb24gZW1pc2lvbiBbZmVjaGFlbWlzaW9uXSBkZWJlcyBwYWdhciBbZmVjaGFtYXhwYWdvXTwvYm9keQ==\",\n" + 
+			"\n" + 
 			"  \"customerId\":1,\n" + 
-			"  \"ordenImpresionId\":\"3\",\n" + 
-			"  \"emailDescription\":\"envio mes de enero 2018\",\n" + 
-			"  \"packagesName\" : [\"files/pueba-separar/PAQUETE_001.pdf\"]" + 
+			"  \"ordenImpresionId\":\"3500\",\n" + 
+			"  \"emailDescription\":\"ENVIO CAMPANA FEBRERO 2018\",\n" + 
+			"  \"packagesName\" : [\"files/separa/PAQUETE_001.pdf\"]\n" + 
 			"}";
-	@Ignore
+	
 	@Test
 	public void createEmailCampaign() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		SendEmailPayload payload = objectMapper.readValue(body, SendEmailPayload.class);			   

@@ -3,11 +3,14 @@ package com.jmc.binaria.sender.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sql2o.Connection;
-
 import com.jmc.binaria.sender.model.Sender;
 
 public class SenderDaoImpl implements SenderDao {
+	
+	static Logger logger = LoggerFactory.getLogger(SenderDaoImpl.class);
 
 	private static String TABLE_NAME = "sender_senders";
 
@@ -16,14 +19,15 @@ public class SenderDaoImpl implements SenderDao {
 		try {
 			if (this.findByName(sender.getName()) == null) {
 				conn = Sql2Connection.getSql2oConnetion().beginTransaction();
-				String sql = "insert into " + TABLE_NAME + " (name, uri, customer_id) VALUES (:name, :uri, :customer_id)";
+				String sql = "insert into " + TABLE_NAME + " (name, uri, customer_id, pid) VALUES (:name, :uri, :customer_id, :pid)";
 				conn.createQuery(sql)
 						.addParameter("name", sender.getName())
 						.addParameter("uri", sender.getUriAccess())
 						.addParameter("customer_id", sender.getCustomerId())
+						.addParameter("pid", sender.getPid())
 						.executeUpdate();
 				conn.commit();
-				System.out.println(sql);
+				logger.debug(sql);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -44,7 +48,7 @@ public class SenderDaoImpl implements SenderDao {
 				conn.createQuery(sql).addParameter("name", sender.getName()).addParameter("uri", sender.getUriAccess())
 						.addParameter("assignation_type", sender.getAsignationType()).executeUpdate();
 				conn.commit();
-				System.out.println(sql);
+				logger.debug(sql);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,7 +69,7 @@ public class SenderDaoImpl implements SenderDao {
 					.addColumnMapping("uri", "uriAccess")
 					.addColumnMapping("assignation_type", "asignationType")
 					.executeAndFetch(Sender.class);
-			System.out.println(sql);
+			logger.debug(sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -97,6 +101,28 @@ public class SenderDaoImpl implements SenderDao {
 		}
 		return objeto;
 	}
+	
+	public boolean existsMainSender() {
+		Connection conn = null;
+		try {
+			String sql = "select * from " + TABLE_NAME + " where name = :name ";
+			List<Sender> result = new ArrayList<Sender>();
+			conn = Sql2Connection.getSql2oConnetion().open();
+			result = conn.createQuery(sql).addParameter("name", Sender.SENDER_MAIN_NAME)
+					.addColumnMapping("uri", "uriAccess")
+					.addColumnMapping("assignation_type", "asignationType")
+					.addColumnMapping("customer_id", "customerId")
+					.executeAndFetch(Sender.class);
+			if (result != null && !result.isEmpty())
+				return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null)
+				conn.close();
+		}
+		return false;
+	}
 
 	public int nextSenderId() {
 		int next = 0;
@@ -124,8 +150,6 @@ public class SenderDaoImpl implements SenderDao {
 			String sql = "delete from " + TABLE_NAME + " where name = :name";
 			conn.createQuery(sql).addParameter("name", sender.getName()).executeUpdate();
 			conn.commit();
-
-			System.out.println(sql);
 			result = true;
 
 		} catch (Exception e) {

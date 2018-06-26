@@ -1,6 +1,10 @@
 package com.jmc.binaria.sender.util;
 
 
+import com.jmc.binaria.sender.db.FileCampaignDao;
+import com.jmc.binaria.sender.db.FileCampaignDaoImpl;
+import com.jmc.binaria.sender.model.Campaign;
+import com.jmc.binaria.sender.model.FileCampaign;
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -15,14 +19,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BinariaUtil {
+	
+	static Logger logger = LoggerFactory.getLogger(BinariaUtil.class);
+	
+	private static FileCampaignDao fileCampaignDao = new FileCampaignDaoImpl();
 
 	private BinariaUtil() {
 		// Nothing to do
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
-	public static void separarDocumentos(File archivoPadre, String ruta) {
+	public static void separarDocumentos(File archivoPadre, String ruta, Campaign campaign) {
 
 		String destinatario = "";
 		try {
@@ -39,8 +50,11 @@ public class BinariaUtil {
 			String extra = null;
 			int pagInicio = 0;
 			int pagFin = 0;
+			logger.info(" Bookmark Size : {} ", bookmarksLst.size());
 			for (int i = 0; i < bookmarksLst.size(); i++) {
 				sti = new StringTokenizer(bookmarksLst.get(i).get("Title").toString(), "|");
+				String idFileName;
+				FileCampaign fileCampaign = new FileCampaign();
 				if (sti != null && sti.hasMoreElements()) {
 					destinatario = sti.nextToken();
 					nombre = sti.nextToken();
@@ -51,8 +65,13 @@ public class BinariaUtil {
 					if (!carpeta.exists()) {
 						carpeta.mkdirs();
 					}
-					pdfNuevo = new File(carpeta, System.getProperty("file.separator") + i + "|" + destinatario + "|"
-							+ nombre.replace("/", "�") + "|" + correlativo + "|" + extra + ".pdf");
+					idFileName =  i + "-campiang-"+campaign.getId()+ "-" + destinatario ;
+					pdfNuevo = new File(carpeta+System.getProperty("file.separator"),idFileName+ ".pdf");
+					fileCampaign.setCampaignId(campaign.getId());
+					fileCampaign.setFileId(idFileName);
+					fileCampaign.setFilePath(pdfNuevo.getAbsolutePath());
+//					pdfNuevo = new File(carpeta, System.getProperty("file.separator") + i + "|" + destinatario + "|"
+//							+ nombre.replace("/", "¬") + "|" + correlativo + "|" + extra + ".pdf");
 
 				}
 				documentoHijo = new Document();
@@ -70,10 +89,12 @@ public class BinariaUtil {
 					copia.addPage(page);
 				}
 				documentoHijo.close();
+				fileCampaignDao.save(fileCampaign);
+				logger.info(" Separado Documento : {} ", fileCampaign.getFilePath());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("ERROR --- GRABAR EN LOGS");
+			logger.error(" Error separando pdf. Message : {} ", e.getMessage());
+			logger.error(" Error separando pdf. Cause  : {} ", e.getCause());			
 		}
 	}
 

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,11 +68,12 @@ public class BinariaSenderService {
 		customer.setId(payload.getCustomerId());
 		String nameCampaig = payload.getEmailDescription();
 		Long ordenImpresionId = Long.parseLong(payload.getOrdenImpresionId());
-		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId,payload.getEmailTemplate());
+		String emailTemplate = new String(Base64.decode(payload.getEmailTemplateBase64()));
+		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId, emailTemplate);
 		logger.info(" SEPARANDO PDF DE PAQUETES ");
 		for (File arch : listaPaqueteArchivos) {
 			String dir = "/tmp/PAQUETE_" + arch.getName().replace(".pdf", "");
-			BinariaUtil.separarDocumentos(arch, dir);
+			BinariaUtil.separarDocumentos(arch, dir, campaing);
 			File temp = new File(dir);
 			encolaDocuments(temp,"PAQUETE_" + arch.getName().replace(".pdf", ""), 
 					campaing.getId(), campaing.getEmailTemplate());

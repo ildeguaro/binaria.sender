@@ -6,6 +6,10 @@ public class Sender {
 	
 	public static String ASSIGN_ANY = "ANY";
 	
+	public static String SENDER_MAIN_NAME = "binaria.sender.main";
+	
+	public static String SENDER_NAME_PREFIX = "binaria.sender.";
+	
 	private int id;
 	
 	private String name;
@@ -19,6 +23,8 @@ public class Sender {
 	private boolean enabled;
 	
 	private boolean debug;	
+	
+	private String pid;
 
 	public int getId() {
 		return id;
@@ -74,6 +80,14 @@ public class Sender {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
 	}
 
 }
