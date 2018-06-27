@@ -55,3 +55,13 @@ CREATE TABLE sender_events(
   event varchar(512) NULL DEFAULT NULL,  
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS sender_campaigns_files;
+CREATE TABLE sender_campaigns_files(
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  sender_campaigns_id bigint(20),  
+  file_id varchar(200) NULL DEFAULT NULL,  
+  file_path text NULL DEFAULT NULL,
+  metadata text NULL DEFAULT NULL,  
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

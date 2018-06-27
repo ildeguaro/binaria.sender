@@ -60,7 +60,7 @@ public class BinariaSenderService {
 			listaPaqueteArchivos.add(paquetePdf);
 		}
 		FTPUtils.desconectar();
-		logger.info(" REALIZADO OBTENCION PAQUETES DE FTP ");
+		logger.info(" FINALIZADA OBTENCION PAQUETES DE FTP ");
 
 		
 		Campaign campaing;
@@ -70,59 +70,16 @@ public class BinariaSenderService {
 		Long ordenImpresionId = Long.parseLong(payload.getOrdenImpresionId());
 		String emailTemplate = new String(Base64.decode(payload.getEmailTemplateBase64()));
 		campaing = campaignDao.createCampaing(customer, nameCampaig, ordenImpresionId, emailTemplate);
-		logger.info(" SEPARANDO PDF DE PAQUETES ");
+		logger.info(" SEPARANDO PDF DE PAQUETES Y ENCOLANDO DETALLE DE ENVIO PARA LA ORDEN: {}",campaing.getId());
+		int count = 0;
 		for (File arch : listaPaqueteArchivos) {
-			String dir = "/tmp/PAQUETE_" + arch.getName().replace(".pdf", "");
-			BinariaUtil.separarDocumentos(arch, dir, campaing);
-			File temp = new File(dir);
-			encolaDocuments(temp,"PAQUETE_" + arch.getName().replace(".pdf", ""), 
-					campaing.getId(), campaing.getEmailTemplate());
-
+			String dir = "/tmp/SNDR_PKG_" + arch.getName().replace(".pdf", "");
+			count+=BinariaUtil.separarDocumentosYEncolarEnvioPorPdf(arch, dir, campaing);
 		}
+		logger.info(" CREADA LA ORDEN DE ENVIO {}",campaing.getId());
+		logger.info(" ENVIOS POR REALIZAR {}",count);
 		return campaing;
-	}
-
-	private void encolaDocuments(File file, String paqueteName, String campaignId, String contentEmail) {		
-		try {			
-			for (File f : file.listFiles()) {
-				String contentHtml = contentEmail;
-				sti = new StringTokenizer(f.getName(), "|");
-				sti.nextToken();
-				String direccion = sti.nextToken();
-				String nombreDestinatario = sti.nextToken();
-				StringBuilder camposDeBusqueda = new StringBuilder();
-
-				String chain = f.getName().replace("|", "~");
-				String[] valuesChain = chain.split("~");
-
-				String[] mapValueString = valuesChain[valuesChain.length - 1].replace(".pdf", "").replace("^", "~")
-						.split("~");
-
-				for (String val : mapValueString) {
-					String[] splitedString = val.split("=");
-					String key = splitedString[0].replace("{", "");
-					String value = splitedString[1].replace("}", "");
-					contentHtml = contentHtml.replace(key, value);
-					camposDeBusqueda.append(key.replace("[", "").replace("]","")).append("=").append(value).append(";");
-				}
-				EmailCampaign ec = new EmailCampaign();
-				ec.setCampaignId(campaignId);
-				ec.setAddresses(direccion);
-				ec.setNames(nombreDestinatario);
-				ec.setPackageId(paqueteName);
-				ec.setAttachmentPath(f.getCanonicalPath());
-				
-				ec.setContentEmail(contentHtml);
-				ec.setFieldsSearch(camposDeBusqueda.toString());
-				emailCampaignDao.createEmailCampaing(ec);
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
+	}	
 		
 	public List<Campaign> getAllCampaign(){
 		return campaignDao.allCampaign();

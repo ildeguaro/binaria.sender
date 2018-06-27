@@ -39,12 +39,14 @@ public class SenderThread {
 	private boolean debug;
 	private String name;
 	private String direccion;
+	private String nombreDestinatario;
 
-	public SenderThread(Properties props, Integer idThread, String direccion, String de, String asunto, String contenidoHtml,
+	public SenderThread(Properties props, Integer idThread, String direccion, String nombreDestinatario, String de, String asunto, String contenidoHtml,
 			String nombreAdjunto, String producto, String rutaAdjunto, boolean debug) throws InterruptedException {
 		this.producto = producto;
 		this.idThread = idThread;
 		this.direccion= direccion;
+		this.nombreDestinatario = nombreDestinatario;
 		this.de = de;
 		this.asunto = asunto;
 		this.contenidoHtmlTemplate = contenidoHtml;
@@ -66,34 +68,21 @@ public class SenderThread {
 		File adjunto = new File(rutaAdjunto);
 		StringTokenizer sti = null;
 
-		
-		String nombreDestinatario;
 		String id;
 		byte[] pdfArray = null;
 
-		sti = new StringTokenizer(adjunto.getName(), "|");
-		id = sti.nextToken();
-		sti.nextToken();
-		nombreDestinatario = sti.nextToken();
+		//sti = new StringTokenizer(adjunto.getName(), "|");
+		//id = sti.nextToken();
+		//ti.nextToken();
+		//nombreDestinatario = sti.nextToken();
 		String contenidoHtml = contenidoHtmlTemplate;
 		try {
 
-			/*****************************************/
-			String chain = adjunto.getName().replace("|", "~");
-			String[] valuesChain = chain.split("~");
-
-			String[] mapValueString = valuesChain[valuesChain.length - 1].replace(".pdf", "").replace("^", "~")
-					.split("~");
-			for (String val : mapValueString) {
-				String[] splitedString = val.split("=");
-				String key = splitedString[0].replace("{", "");
-				String value = splitedString[1].replace("}", "");
-				contenidoHtml = contenidoHtml.replace(key, value);
-			}
+			
 			MimeMessage message = null;
 
 			if (direccion != null || direccion != "null") {
-				String nombre = "" + nombreDestinatario.replace("¬", "/");
+				nombreDestinatario = "" + nombreDestinatario.replace("¬", "/");
 				direccion = direccion.split(";")[0];
 				//cadenaHeader = new StringBuilder(producto);
 				//cadenaHeader.append("+");
@@ -107,10 +96,10 @@ public class SenderThread {
 					//cadenaHeader.append(direccion.replace("@", "="));
 				}
 	
-				contenidoHtml = contenidoHtml.replace("[sunombre]", nombre);
+				contenidoHtml = contenidoHtml.replace("[sunombre]", nombreDestinatario);
 				
 				t = JavaMailManager.conectarSMTP(props, debug);
-				message = JavaMailManager.crearMensaje(contenidoHtml, de, nombre + " " + asunto);
+				message = JavaMailManager.crearMensaje(contenidoHtml, de, nombreDestinatario + " " + asunto);
 				if (direccion.contains(";")) {
 					for (String str : direccion.split(";")) {
 						message.setRecipient(Message.RecipientType.TO, new InternetAddress(str));

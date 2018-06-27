@@ -71,6 +71,7 @@ public class BinariaSenderServiceTest {
 		//assertNotNull(campaign);		
 	}
 	
+	@Ignore
 	@Test
 	public void getEmailCampaignBasicOnlyOrdenIdAndAddress() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
 		service.getEmailCampaignByBasicSearch(1, "jcarslosm@gmail.com", "", "");

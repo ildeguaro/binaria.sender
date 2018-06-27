@@ -60,7 +60,7 @@ public class SenderWorker extends TimerTask {
 				emailCampaignService.updateSending(email);
 				logger.info("{} : encontrado {} para enviar", this.sender.getName(), email.getAddresses());
 				try {
-					if (new SenderThread(this.props, 1, email.getAddresses(), smtpSettings.getFrom(), smtpSettings.getSubject(),
+					if (new SenderThread(this.props, 1, email.getAddresses(), email.getNames(), smtpSettings.getFrom(), smtpSettings.getSubject(),
 							email.getContentEmail(), smtpSettings.getAttachmenName(), email.getCampaignName(),
 							email.getAttachmentPath(), this.sender.isDebug()).send());
 

@@ -1,10 +1,9 @@
 package com.jmc.binaria.sender.util;
 
-
-import com.jmc.binaria.sender.db.FileCampaignDao;
-import com.jmc.binaria.sender.db.FileCampaignDaoImpl;
+import com.jmc.binaria.sender.db.EmailCampaignDao;
+import com.jmc.binaria.sender.db.EmailCampaignDaoImpl;
 import com.jmc.binaria.sender.model.Campaign;
-import com.jmc.binaria.sender.model.FileCampaign;
+import com.jmc.binaria.sender.model.EmailCampaign;
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -23,19 +22,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BinariaUtil {
-	
+
 	static Logger logger = LoggerFactory.getLogger(BinariaUtil.class);
-	
-	private static FileCampaignDao fileCampaignDao = new FileCampaignDaoImpl();
+
+	private static EmailCampaignDao emailCampaignDao = new EmailCampaignDaoImpl();
 
 	private BinariaUtil() {
 		// Nothing to do
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
-	public static void separarDocumentos(File archivoPadre, String ruta, Campaign campaign) {
-
-		String destinatario = "";
+	public static int separarDocumentosYEncolarEnvioPorPdf(File archivoPadre, String ruta, Campaign campaign) {
+		int documentCounts = 0;
+		
 		try {
 			PdfReader pdfReaderPadre = new PdfReader(new FileInputStream(archivoPadre));
 			List<Map> bookmarksLst = SimpleBookmark.getBookmark(pdfReaderPadre);
@@ -51,10 +50,10 @@ public class BinariaUtil {
 			int pagInicio = 0;
 			int pagFin = 0;
 			logger.info(" Bookmark Size : {} ", bookmarksLst.size());
+			
 			for (int i = 0; i < bookmarksLst.size(); i++) {
 				sti = new StringTokenizer(bookmarksLst.get(i).get("Title").toString(), "|");
-				String idFileName;
-				FileCampaign fileCampaign = new FileCampaign();
+				String destinatario = "";
 				if (sti != null && sti.hasMoreElements()) {
 					destinatario = sti.nextToken();
 					nombre = sti.nextToken();
@@ -65,13 +64,9 @@ public class BinariaUtil {
 					if (!carpeta.exists()) {
 						carpeta.mkdirs();
 					}
-					idFileName =  i + "-campiang-"+campaign.getId()+ "-" + destinatario ;
-					pdfNuevo = new File(carpeta+System.getProperty("file.separator"),idFileName+ ".pdf");
-					fileCampaign.setCampaignId(campaign.getId());
-					fileCampaign.setFileId(idFileName);
-					fileCampaign.setFilePath(pdfNuevo.getAbsolutePath());
-//					pdfNuevo = new File(carpeta, System.getProperty("file.separator") + i + "|" + destinatario + "|"
-//							+ nombre.replace("/", "¬") + "|" + correlativo + "|" + extra + ".pdf");
+					String idFileName = (i+1) + "-campaign-" + campaign.getId() + "-" + destinatario;
+					pdfNuevo = new File(carpeta + System.getProperty("file.separator"), idFileName + ".pdf");
+
 
 				}
 				documentoHijo = new Document();
@@ -89,13 +84,19 @@ public class BinariaUtil {
 					copia.addPage(page);
 				}
 				documentoHijo.close();
-				fileCampaignDao.save(fileCampaign);
-				logger.info(" Separado Documento : {} ", fileCampaign.getFilePath());
+				encolaDocuments(
+						pdfNuevo,
+						ruta, 
+						campaign.getId(),destinatario,
+						nombre,campaign.getEmailTemplate(),
+						extra);
+				documentCounts++;
 			}
 		} catch (Exception e) {
 			logger.error(" Error separando pdf. Message : {} ", e.getMessage());
-			logger.error(" Error separando pdf. Cause  : {} ", e.getCause());			
+			logger.error(" Error separando pdf. Cause  : {} ", e.getCause());
 		}
+		return documentCounts;
 	}
 
 	public static File getPaqueteOrdenImpresionDesdeFTP(String nombreArchivo) throws IOException {
@@ -104,7 +105,7 @@ public class BinariaUtil {
 			String[] cadenaSeparada = nombreArchivo.split("/");
 			String archivo = cadenaSeparada[cadenaSeparada.length - 1];
 			String dir = nombreArchivo.substring(0, nombreArchivo.length() - archivo.length());
-			
+
 			File archivoBuscado = FTPUtils.descargar(dir, archivo);
 			return archivoBuscado;
 		} catch (Exception e) {
@@ -117,6 +118,42 @@ public class BinariaUtil {
 	public static Integer obtenerPagina(Map bookmark) {
 		StringTokenizer sti = new StringTokenizer((String) bookmark.get("Page"), " ");
 		return Integer.parseInt(sti.nextToken());
+	}
+
+	private static void encolaDocuments(File file, String paqueteName, String campaignId, String direccion,
+			String nombreDestinatario, String emailTemplate, String fieldsSearch) {
+		
+		try {
+			fieldsSearch = fieldsSearch.replace("^", "@");
+			StringBuilder camposDeBusqueda = new StringBuilder();
+			String [] mapValueString = fieldsSearch.split("@");
+			for (String val : mapValueString) {
+				String[] splitedString = val.split("=");
+				String key = splitedString[0].replace("{", "");
+				String value = splitedString[1].replace("}", "");
+				emailTemplate = emailTemplate.replace(key, value);
+				camposDeBusqueda.append(key.replace("[", "").replace("]", "")).append("=").append(value).append(";");
+			}
+			EmailCampaign ec = new EmailCampaign();
+			ec.setCampaignId(campaignId);
+			ec.setAddresses(direccion);
+			ec.setNames(nombreDestinatario);
+			ec.setPackageId(paqueteName);
+			ec.setAttachmentPath(file.getCanonicalPath());
+
+			ec.setContentEmail(emailTemplate);
+			ec.setFieldsSearch(camposDeBusqueda.toString());
+			emailCampaignDao.createEmailCampaing(ec);
+			logger.info(" Encolado para enviar {}",ec.getAddresses());
+			logger.info(" Su adjunto {}",file.getCanonicalPath());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error creado detalle de envio. Message : {} ",e.getMessage());
+			logger.error("Error creado detalle de envio. Cause : {} ",e.getCause());
+			
+		}
+		
 	}
 
 }
