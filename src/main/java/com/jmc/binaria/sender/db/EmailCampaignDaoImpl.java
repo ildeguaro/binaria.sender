@@ -7,6 +7,7 @@ import java.util.Map;
 import org.sql2o.Connection;
 
 import com.jmc.binaria.sender.model.EmailCampaign;
+import com.jmc.binaria.sender.model.Sender;
 
 public class EmailCampaignDaoImpl implements EmailCampaignDao {
 
@@ -44,13 +45,16 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 			conn = Sql2Connection.getSql2oConnetion().beginTransaction();
 			conn.createQuery("update " + TABLE_NAME
 					+ " set sending_date = now(), sent"
-					+ " = :sent, response = :response, error = :error, sender_id = :senderId "
-					+ " where id = :id")
-					.addParameter("id", ec.getId())
+					+ " = :sent, response = :response, error = :error, sender_id = :senderId, "
+					+ " esmtp_id = :esmtpid "
+					+ " where id = :id")					
 					.addParameter("sent", ec.isWasSent())
 					.addParameter("response", ec.getResponse())
 					.addParameter("error", ec.getError())
-					.addParameter("senderId", ec.getSenderId()).executeUpdate();
+					.addParameter("senderId", ec.getSenderId())
+					.addParameter("esmtpid", ec.getEsmtpId())
+					.addParameter("id", ec.getId())
+					.executeUpdate();
 			conn.commit();
 
 		} catch (Exception e) {
@@ -80,7 +84,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("content_email", "contentEmail").addColumnMapping("sending_date", "sendingDate")
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,7 +114,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch").addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName").addColumnMapping("creation_date", "campaignDate")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,7 +143,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch").addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName").addColumnMapping("creation_date", "campaignDate")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,7 +172,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch").addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName").addColumnMapping("creation_date", "campaignDate")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -189,7 +201,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch").addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName").addColumnMapping("creation_date", "campaignDate")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -250,7 +264,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch").addColumnMapping("uuid", "campaignUuid")
 					.addColumnMapping("name", "campaignName").addColumnMapping("creation_date", "campaignDate")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -274,7 +290,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("content_email", "contentEmail").addColumnMapping("sending_date", "sendingDate")
 					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch")
-					.addColumnMapping("sender_assigned_id", "senderIdAssinged").executeAndFetch(EmailCampaign.class);
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
 			if (result != null && !result.isEmpty())
 				return result.get(0);
 
@@ -287,13 +305,13 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		return null;
 	}
 
-	public EmailCampaign selectEmailToSendNoAssigned() {
+	public List<EmailCampaign> selectEmailToSendNoAssigned(int quantity, Sender sender) {
 		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
 		Connection conn = null;
 		try {
 			conn = Sql2Connection.getSql2oConnetion().open();
 			String sql = "select * from " + TABLE_NAME + " where sent = 0 and error is null and sender_id is null "
-					+ " order by id asc limit 1 for update";
+					+ " order by id asc limit "+quantity+" for update";
 			result = conn.createQuery(sql).addColumnMapping("sender_campaigns_id", "campaignId")
 					.addColumnMapping("package_id", "packageId").addColumnMapping("document_id", "documentId")
 					.addColumnMapping("attachment_path", "attachmentPath")
@@ -302,10 +320,8 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 					.addColumnMapping("sender_id", "senderId")
 					.addColumnMapping("fields_search", "fieldsSearch")
 					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
 					.executeAndFetch(EmailCampaign.class);
-
-			if (result != null && !result.isEmpty())
-				return result.get(0);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -313,7 +329,35 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 			if (conn != null)
 				conn.close();
 		}
-		return null;
+		return result;
+	}
+
+	@Override
+	public boolean getEmailSent(EmailCampaign email) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+		Connection conn = null;
+		try {
+			conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select * from " + TABLE_NAME + " where sent = 1 and id = "+email.getId();
+			result = conn.createQuery(sql).addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId").addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail").addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
+			if (result != null && !result.isEmpty())
+				return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null)
+				conn.close();
+		}
+		return false;
 	}
 
 }

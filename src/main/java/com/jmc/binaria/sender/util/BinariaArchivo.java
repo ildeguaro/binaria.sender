@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+
 /**
  *
  * @author William Basabe
@@ -28,13 +31,13 @@ public class BinariaArchivo implements Serializable {
     /**
      * Tamaño del Buffer por defecto.
      */
-    private final int NUM = 512;
+    private static final int NUM = 512;
     
     /**
      *Propiedad opcional para la ruta de los archivos temporales generados 
      *por esta clase
      */
-    private String ubicacionArchivos = null;
+    private static String ubicacionArchivos = null;
     /**
      * Método que convierte un archivo en su representación en un arreglo de
      * byte.
@@ -74,7 +77,7 @@ public class BinariaArchivo implements Serializable {
      * para identificar el mismo en caso de ser necesario.
      * @return Retona un objeto File contentivo con el archivo
      */
-    public  File archivoDesdeStream(final InputStream fuente,
+    public static File archivoDesdeStream(final InputStream fuente,
             final String extension, final String identificador)
             throws Exception {
         byte[] buf = new byte[NUM];
@@ -107,6 +110,57 @@ public class BinariaArchivo implements Serializable {
             throw new Exception("error.sis.fuente_erronea");
         }
         return archivo;
+    }
+    
+    /**
+     * Dado los datos de conexión descarga el archivo especificado a través de
+     * protocolo ftp.
+     * @param host Nombre del Host FTP al cual se conectará.
+     * @param port Puerto de conección.
+     * @param user Usuario.
+     * @param pass Contraseña.
+     * @param workingDir Directorio de ftp donde se ubica el archivo a descagar.
+     * @param archivoStr Nombre del archivo a descargar.
+     * @return Retorna ela rchivo descargado.
+     * @throws GeneralException Si ocurre algún error esta excepción es
+     * arrojada.
+     */
+    public  static final File descargaFTP(final String host, final String port,
+            final String user, final String pass, final String workingDir,
+            final String archivoStr)
+            throws Exception {
+        File archivoDescargado = null;
+        FTPClient fTPClient = new FTPClient();
+        try {
+            fTPClient.connect(host, Integer.parseInt(port));
+            fTPClient.login(user, pass);
+            fTPClient.changeWorkingDirectory(workingDir);
+            fTPClient.setFileType(FTP.BINARY_FILE_TYPE);
+
+            archivoDescargado = archivoDesdeStream(fTPClient
+                    .retrieveFileStream(archivoStr), extensionArchivo(
+                    archivoStr), archivoStr);
+
+        } catch (IOException ex) {
+            log.error("error",ex);
+            throw new Exception("error.sis.ftp");
+        } finally {
+            try {
+                fTPClient.disconnect();
+            } catch (IOException ex) {
+                throw new Exception("error.sis.ftp_desconexion");
+            }
+        }
+        return archivoDescargado;
+    }
+    
+
+
+     public static final String extensionArchivo(String nombreArchivo) {
+        String extencionArchivo = null;
+        extencionArchivo = nombreArchivo.substring(nombreArchivo.lastIndexOf(
+                ".") + 1);
+        return extencionArchivo;
     }
 
 

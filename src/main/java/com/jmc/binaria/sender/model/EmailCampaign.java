@@ -24,6 +24,8 @@ public class EmailCampaign {
 	
 	private boolean wasSent;
 	
+	private String esmtpId;
+	
 	private String response;
 	
 	private String error; 
@@ -130,6 +132,14 @@ public class EmailCampaign {
 
 	public String getError() {
 		return error;
+	}
+
+	public String getEsmtpId() {
+		return esmtpId;
+	}
+
+	public void setEsmtpId(String esmtpId) {
+		this.esmtpId = esmtpId;
 	}
 
 	public void setError(String error) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jmc.binaria.sender.model.EmailCampaign;
+import com.jmc.binaria.sender.model.Sender;
 
 public interface EmailCampaignDao {
 
@@ -15,7 +16,7 @@ public interface EmailCampaignDao {
 	
 	EmailCampaign selectEmailToSendAssigned(int senderId);
 	
-	EmailCampaign selectEmailToSendNoAssigned();
+	List<EmailCampaign> selectEmailToSendNoAssigned(int quantity, Sender sender);
 	
 	EmailCampaign findEmailCampaignByColumns(Map<String, String> columns);
 	
@@ -28,5 +29,7 @@ public interface EmailCampaignDao {
 	List<EmailCampaign> findEmailCampaignByName(String name);
 	
 	List<EmailCampaign> findEmailCampaignByOrdenIdAddressNamesOrFieldsSearch(long ordenId, String address, String names, String searchFields);
+
+	boolean getEmailSent(EmailCampaign email);
 
 }

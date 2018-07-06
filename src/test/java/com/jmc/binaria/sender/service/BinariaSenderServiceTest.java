@@ -2,6 +2,7 @@ package com.jmc.binaria.sender.service;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Ignore;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
+import com.jmc.binaria.sender.util.BinariaUtil;
 
 @RunWith(JUnit4.class)
 public class BinariaSenderServiceTest {
@@ -34,7 +36,7 @@ public class BinariaSenderServiceTest {
 			"  \"customerId\":1,\n" + 
 			"  \"ordenImpresionId\":\"3500\",\n" + 
 			"  \"emailDescription\":\"ENVIO CAMPANA FEBRERO 2018\",\n" + 
-			"  \"packagesName\" : [\"files/separa/PAQUETE_001.pdf\"]\n" + 
+			"  \"packagesName\" : [\"files/separa/PAQUETE_001_WILLIAM.pdf\"]\n" + 
 			"}";
 	
 	@Test
@@ -76,6 +78,14 @@ public class BinariaSenderServiceTest {
 	public void getEmailCampaignBasicOnlyOrdenIdAndAddress() throws JsonParseException, JsonMappingException, IOException, InterruptedException {		
 		service.getEmailCampaignByBasicSearch(1, "jcarslosm@gmail.com", "", "");
 		//assertNotNull(campaign);		
+	}
+	
+	@Ignore
+	@Test
+	public void separarPdf() throws JsonParseException, JsonMappingException, IOException, InterruptedException {	
+		Campaign campaign = new Campaign();
+		campaign.setId("1");
+		BinariaUtil.separarDocumentosYEncolarEnvioPorPdf(new File("/tmp/PAQUETE_001_WILLIAM.pdf"), "/tmp/separacion/", campaign);	
 	}
 
 

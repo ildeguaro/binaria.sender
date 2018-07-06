@@ -27,6 +27,7 @@ CREATE TABLE sender_email_campaign(
   sending_date timestamp NULL DEFAULT NULL,
   sender_id bigint(20) NULL DEFAULT NULL,
   sent tinyint(1) NOT NULL DEFAULT 0,
+  esmtp_id varchar(40) NULL DEFAULT NULL,
   response varchar(512) NULL DEFAULT NULL,
   error varchar(512) DEFAULT NULL,  
   fields_search varchar(1024) NULL DEFAULT NULL,  

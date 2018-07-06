@@ -22,10 +22,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import com.sun.mail.smtp.SMTPTransport;
+
 public class JavaMailManager {
 
 	private static Session session;
-	private static Transport t;
+	private static SMTPTransport t;
 	private static List<String> listaDirecciones;
 
 	synchronized public static Transport conectarSMTP(Properties prop, String returnPath, boolean debug)
@@ -34,7 +36,7 @@ public class JavaMailManager {
 		session = Session.getDefaultInstance(prop, null);
 		session.setDebug(debug);
 
-		t = session.getTransport("smtp");
+		t = (SMTPTransport) session.getTransport("smtp");
 
 		if (prop.getProperty("mail.smtp.starttls.enable").equals("true")) {
 			if (!t.isConnected()) {
@@ -47,10 +49,10 @@ public class JavaMailManager {
 		return t;
 	}
 
-	synchronized public static Transport conectarSMTP(Properties prop, boolean debug) throws MessagingException {
+	synchronized public static SMTPTransport conectarSMTP(Properties prop, boolean debug) throws MessagingException {
 		session = Session.getDefaultInstance(prop, null);
 		session.setDebug(debug);
-		t = session.getTransport("smtp");
+		t = (SMTPTransport) session.getTransport("smtp");
 
 		if (prop.getProperty("mail.smtp.starttls.enable").equals("true")) {
 			if (!t.isConnected()) {

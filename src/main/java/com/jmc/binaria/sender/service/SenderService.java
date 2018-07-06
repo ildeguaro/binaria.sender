@@ -18,7 +18,7 @@ public class SenderService {
 			
 		String name = "";
 		if (senderDao.existsMainSender()) {
-			name = Sender.SENDER_NAME_PREFIX + (this.senderDao.nextSenderId()+1);
+			name = Sender.SENDER_NAME_PREFIX + (this.senderDao.nextSenderId());
 			port = portBase+this.senderDao.nextSenderId()+1;
 		}else { 
 			name = Sender.SENDER_MAIN_NAME;

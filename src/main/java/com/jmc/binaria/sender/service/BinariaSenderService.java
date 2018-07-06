@@ -10,7 +10,6 @@ import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.FtpSettings;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
 import com.jmc.binaria.sender.util.BinariaUtil;
-import com.jmc.binaria.sender.util.FTPUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,13 +52,11 @@ public class BinariaSenderService {
 		listaDeNombreDePaquetes.addAll(Arrays.asList(payload.getPackagesName()));
 		File paquetePdf = null;
 		logger.info("OBTENIENDO PAQUETES DE FTP");
-		FTPUtils.conectar(ftpSettings.getHost(), Integer.parseInt(ftpSettings.getPort()), ftpSettings.getUsername(),
-				ftpSettings.getPassword());
 		for (String elemento : listaDeNombreDePaquetes) {
-			paquetePdf = BinariaUtil.getPaqueteOrdenImpresionDesdeFTP(elemento);
+			paquetePdf = BinariaUtil.getPaqueteOrdenImpresionDesdeFTP(ftpSettings.getHost(),
+					ftpSettings.getPort(),ftpSettings.getUsername(),ftpSettings.getPassword(), elemento);
 			listaPaqueteArchivos.add(paquetePdf);
 		}
-		FTPUtils.desconectar();
 		logger.info(" FINALIZADA OBTENCION PAQUETES DE FTP ");
 
 		

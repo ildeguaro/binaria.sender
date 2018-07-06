@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.Timer;
 
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
+import com.jmc.binaria.sender.model.EnvironmentVar;
 import com.jmc.binaria.sender.model.Sender;
 import com.jmc.binaria.sender.model.User;
 import com.jmc.binaria.sender.model.api.SendEmailPayload;
@@ -59,12 +61,18 @@ public class App {
 
 	public static void main(String[] args) throws InterruptedException, NumberFormatException, IOException {
 
-		String pid = null;
-		for (String arg : args) {
-			logger.info(arg);
-		}
-		if (args[0] != null)
-			pid = args[0]; 
+	
+		final EnvironmentVar envVar = new EnvironmentVar();
+		Arrays.asList(args).stream().forEach(e->{
+			logger.info("Envvar "+e);
+			if (e.contains("Sthreads="))
+				envVar.setThreads(Integer.parseInt(e.split("=")[1]));
+			if (e.contains("Scustomer-id="))
+				envVar.setClientId(Integer.parseInt(e.split("=")[1]));
+			if (e.contains("Spid="))
+				envVar.setPid(e.split("=")[1]);
+		});
+		
 		final ThymeleafTemplateEngine engineView = new ThymeleafTemplateEngine();
 
 		service = new BinariaSenderService();
@@ -72,8 +80,8 @@ public class App {
 		userService = new UserService();
 		objectMapper = new ObjectMapper();
 		int portBase = Integer.parseInt(App.getPropertiesApp().getProperty("app.port-base"));
-		long customerId = Long.parseLong(App.getPropertiesApp().getProperty("app.client-id"));
-		sender = senderService.registraMe(InetAddress.getLocalHost().getHostAddress(), portBase, customerId, pid);
+		long customerId = Long.parseLong(""+envVar.getClientId());
+		sender = senderService.registraMe(InetAddress.getLocalHost().getHostAddress(), portBase, customerId, envVar.getPid());
 		port(senderService.getPort());
 
 		staticFiles.location("/templates");
@@ -82,7 +90,7 @@ public class App {
 
 		/******************************************************************/
 
-		final SenderWorker worker = new SenderWorker(sender);
+		final SenderWorker worker = new SenderWorker(sender,envVar.getThreads());
 		Timer timer = new Timer();
 		timer.schedule(worker, 1000, 2000);
 		/******************************************************************/
@@ -248,6 +256,10 @@ public class App {
 		return new ThymeleafTemplateEngine().render(new ModelAndView(variables, view));
 		// return App.interceptorLogin(hash,variables,view);
 
+	}
+	
+	public static void getEnvironmentVar(String expression) {
+		if (expression.contains("SThread="));
 	}
 
 }
