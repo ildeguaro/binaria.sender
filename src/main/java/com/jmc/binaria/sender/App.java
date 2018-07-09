@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 
+import com.jmc.binaria.sender.controller.EmailCampaignController;
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.EnvironmentVar;
@@ -31,6 +32,7 @@ import com.jmc.binaria.sender.service.UserService;
 import com.jmc.binaria.sender.util.SenderWorker;
 import com.jmc.binaria.sender.util.StringUitl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,6 +179,8 @@ public class App {
 				return new Gson().toJson(campaign);
 			}
 		});
+		
+		EmailCampaignController.routes();
 
 		logger.info("\n \u263A Running service: binaria.sender as : {}", sender.getUriAccess());
 
@@ -232,7 +236,7 @@ public class App {
 		if (words == null)
 			words = "";
 
-		if (ordenIdString != null && !ordenIdString.isEmpty())
+		if (StringUtils.isNumeric(ordenIdString))
 			ordenId = Long.parseLong(ordenIdString);
 
 		if (email == null)
@@ -240,8 +244,8 @@ public class App {
 
 		if (name == null)
 			name = "";
-		if (ordenId > 0)
-			result = service.getEmailCampaignByBasicSearch(ordenId, email, name, words);
+		
+		result = service.getEmailCampaignByBasicSearch(ordenId, email, name, words);
 
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put("instance", "/" + sender.getName() + "/");

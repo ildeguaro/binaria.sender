@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class EmailCampaign {
 
-	private String id;
+	private long id;
 	
 	private String campaignId;
 	
@@ -42,11 +42,11 @@ public class EmailCampaign {
 	
 	private int senderIdAssinged;
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

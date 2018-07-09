@@ -13,6 +13,35 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 
 	private static String TABLE_NAME = "sender_email_campaign";
 
+	@Override
+	public EmailCampaign findById(long id) {
+		List<EmailCampaign> result = new ArrayList<EmailCampaign>();
+		Connection conn = null;
+		try {
+			conn = Sql2Connection.getSql2oConnetion().open();
+			String sql = "select * from " + TABLE_NAME + " where id = " + id;
+			result = conn.createQuery(sql).addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId").addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail").addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
+					.addColumnMapping("esmtp_id", "esmtpId")
+					.executeAndFetch(EmailCampaign.class);
+			if (result != null) {
+				return result.get(0);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null)
+				conn.close();
+		}
+		return null;
+	}
+
 	public EmailCampaign createEmailCampaing(EmailCampaign ec) {
 		Connection conn = null;
 		try {
@@ -359,5 +388,6 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		}
 		return false;
 	}
+
 
 }

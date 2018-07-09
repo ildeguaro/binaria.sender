@@ -20,6 +20,8 @@ public interface EmailCampaignDao {
 	
 	EmailCampaign findEmailCampaignByColumns(Map<String, String> columns);
 	
+	EmailCampaign findById(long id);
+	
 	List<EmailCampaign> findEmailCampaignByOrdenId(long ordenId);
 	
 	List<EmailCampaign> findEmailCampaignByFields(String words);
