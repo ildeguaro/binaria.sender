@@ -317,43 +317,59 @@
 		});
 
 		$('#eventsDialog').on('show.bs.modal', function(event) {
-
+			//$('#modal-body').html("");
 		});
 
 		$(document).on("click", ".events-dialog", function() {
 			var id = $(this).data('email-id');
+			
 			$.ajax({
 				type : "GET",
 				dataType : "json",
 				url : "/api/emails/events/" + id,
 				success : function(data) {
+					
 					console.log(data);
+					var ico_sent = 'glyphicon glyphicon-ban-circle';
 					var ico_proc ='glyphicon glyphicon-ok';
 					var ico_deli = 'glyphicon glyphicon-check';
 					var ico_open = 'glyphicon glyphicon-eye-open';
+					var esmtp = '<div style="color:red">Este correo no ha sido enviado</div>';
+					if (data.sent)
+						ico_sent = 'glyphicon glyphicon-envelope';
 					if (!data.processed)
 						ico_proc = 'glyphicon glyphicon-ban-circle';
 					if (!data.delivered)
 						ico_deli = 'glyphicon glyphicon-ban-circle';
 					if (!data.open)
 						ico_open = 'glyphicon glyphicon-ban-circle';
-					
+					if (data.id)
+						esmtp = data.id;
 					
 					$('#modal-body').html(
-							"<h5>Destinatario: "+data.recipent+"</h5>"+
-							"<h6>Direccion: "+data.email+"</h5>"+							
+							"<h6>"+esmtp+"</h6>"+							
+							"<h4 class='enfasis'>"+data.email+"</h4>"+
+							"<h4>"+data.recipent+"</h5>"+
 							"<ul class='list-group'>"+
+							"  <li class='list-group-item'>"+
+							"    <span class='badge'><i class='"+ico_sent+"'/></span>"+
+							"    <div>Sent</div>"+
+							"    <div>"+data.sent+"</div>"+
+							"  </li>"+
 							"  <li class='list-group-item'>"+
 							"    <span class='badge'><i class='"+ico_proc+"'/></span>"+
 							"    <div>Processed</div>"+
+							"    <div>"+data.processedDate+"</div>"+
 							"  </li>"+
 							"  <li class='list-group-item'>"+
 							"    <span class='badge'><i class='"+ico_deli+"'/></span>"+
 							"    <div>Delivered</div>"+
+							"    <div>"+data.deliveredDate+"</div>"+
 							"  </li>"+
 							"  <li class='list-group-item'>"+
 							"    <span class='badge'><i class='"+ico_open+"'/></span>"+
 							"    <div>Open</div>"+
+							"    <div>"+data.openDate+"</div>"+
 							"  </li>"+
 							"</ul>");
 					

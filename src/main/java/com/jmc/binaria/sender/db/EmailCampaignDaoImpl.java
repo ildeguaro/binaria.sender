@@ -249,7 +249,7 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 		Connection conn = null;
 		try {
 			conn = Sql2Connection.getSql2oConnetion().open();
-			StringBuilder sql = new StringBuilder("select sec.*, sc.id, sc.uuid, sc.name, sc.creation_date \n");
+			StringBuilder sql = new StringBuilder("select sec.*, sc.id as sender_campaigns_id, sc.uuid, sc.name, sc.creation_date \n");
 
 			sql.append("from sender_email_campaign sec \n");
 			sql.append("join sender_campaigns sc on sec.sender_campaigns_id = sc.id  \n");
@@ -286,13 +286,19 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 
 			System.out.println(sql.toString());
 			result = conn.createQuery(sql.toString())
-
-					.addColumnMapping("sender_campaigns_id", "campaignId").addColumnMapping("package_id", "packageId")
-					.addColumnMapping("document_id", "documentId").addColumnMapping("attachment_path", "attachmentPath")
-					.addColumnMapping("content_email", "contentEmail").addColumnMapping("sending_date", "sendingDate")
-					.addColumnMapping("sent", "wasSent").addColumnMapping("sender_id", "senderId")
-					.addColumnMapping("fields_search", "fieldsSearch").addColumnMapping("uuid", "campaignUuid")
-					.addColumnMapping("name", "campaignName").addColumnMapping("creation_date", "campaignDate")
+					
+					.addColumnMapping("sender_campaigns_id", "campaignId")
+					.addColumnMapping("package_id", "packageId")
+					.addColumnMapping("document_id", "documentId")
+					.addColumnMapping("attachment_path", "attachmentPath")
+					.addColumnMapping("content_email", "contentEmail")
+					.addColumnMapping("sending_date", "sendingDate")
+					.addColumnMapping("sent", "wasSent")
+					.addColumnMapping("sender_id", "senderId")
+					.addColumnMapping("fields_search", "fieldsSearch")
+					.addColumnMapping("uuid", "campaignUuid")
+					.addColumnMapping("name", "campaignName")
+					.addColumnMapping("creation_date", "campaignDate")
 					.addColumnMapping("sender_assigned_id", "senderIdAssinged")
 					.addColumnMapping("esmtp_id", "esmtpId")
 					.executeAndFetch(EmailCampaign.class);
