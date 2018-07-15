@@ -2,8 +2,11 @@ package com.jmc.binaria.sender.util;
 
 import com.jmc.binaria.sender.db.EmailCampaignDao;
 import com.jmc.binaria.sender.db.EmailCampaignDaoImpl;
+import com.jmc.binaria.sender.db.EmailCategoryDao;
+import com.jmc.binaria.sender.db.EmailCategoryDaoImpl;
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
+import com.jmc.binaria.sender.model.EmailCategory;
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -14,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -26,6 +30,8 @@ public class BinariaUtil {
 	static Logger logger = LoggerFactory.getLogger(BinariaUtil.class);
 
 	private static EmailCampaignDao emailCampaignDao = new EmailCampaignDaoImpl();
+	
+	private static EmailCategoryDao emailCategoryDao = new EmailCategoryDaoImpl();
 
 	public BinariaUtil() {
 		// Nothing to do
@@ -117,7 +123,7 @@ public class BinariaUtil {
 
 	private static void encolaDocuments(File file, String paqueteName, String campaignId, String direccion,
 			String nombreDestinatario, String emailTemplate, String fieldsSearch) {
-
+		List<EmailCategory> categories = new ArrayList<EmailCategory>();
 		try {
 			fieldsSearch = fieldsSearch.replace("^", "@");
 			StringBuilder camposDeBusqueda = new StringBuilder();
@@ -128,6 +134,9 @@ public class BinariaUtil {
 				String value = splitedString[1].replace("}", "");
 				emailTemplate = emailTemplate.replace(key, value);
 				camposDeBusqueda.append(key.replace("[", "").replace("]", "")).append("=").append(value).append(";");
+				if (key.toLowerCase().contains("categoria_")) {
+					categories.add(new EmailCategory(0, value));
+				}
 			}
 			EmailCampaign ec = new EmailCampaign();
 			ec.setCampaignId(campaignId);
@@ -138,9 +147,22 @@ public class BinariaUtil {
 
 			ec.setContentEmail(emailTemplate);
 			ec.setFieldsSearch(camposDeBusqueda.toString());
-			emailCampaignDao.createEmailCampaing(ec);
+			ec = emailCampaignDao.createEmailCampaing(ec);
+			
 			logger.info(" Encolado para enviar {}", ec.getAddresses());
 			logger.info(" Su adjunto {}", file.getCanonicalPath());
+			
+			final long emailId = ec.getId();
+			categories.forEach( c -> {
+				c.setEmailCampaingId(emailId);
+			});
+			
+			if (emailCategoryDao.insertAll(categories))
+				logger.info(" Se agregar categoria para {}", ec.getAddresses());
+			else
+				logger.error(" No se pudo agregar categoria para {}", ec.getAddresses());
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

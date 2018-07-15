@@ -38,7 +38,7 @@ public class BinariaSenderServiceTest {
 			"  \"customerId\":1,\n" + 
 			"  \"ordenImpresionId\":\"3500\",\n" + 
 			"  \"emailDescription\":\"ENVIO CAMPANA FEBRERO 2018\",\n" + 
-			"  \"packagesName\" : [\"files/separa/PAQUETE_001_WILLIAM.pdf\"]\n" + 
+			"  \"packagesName\" : [\"files/separa/PAQUETE_001_WITH_CATEGORY.pdf\"]\n" + 
 			"}";
 	
 	@Test

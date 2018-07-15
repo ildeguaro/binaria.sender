@@ -45,20 +45,21 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 	public EmailCampaign createEmailCampaing(EmailCampaign ec) {
 		Connection conn = null;
 		try {
-			conn = Sql2Connection.getSql2oConnetion().beginTransaction();
-			conn.createQuery("insert into " + TABLE_NAME
+			conn = Sql2Connection.getSql2oConnetion().open();
+			long id = (long) conn.createQuery("insert into " + TABLE_NAME
 					+ " (sender_campaigns_id,addresses,names,package_id,document_id,attachment_path,content_email,fields_search)"
 					+ " VALUES (:sender_campaigns_id, :addresses, :names, :package_id, :document_id, :attachment_path,"
-					+ " :content_email, :fields_search)")
+					+ " :content_email, :fields_search)",true)
 
 					.addParameter("sender_campaigns_id", ec.getCampaignId())
 					.addParameter("addresses", ec.getAddresses()).addParameter("names", ec.getNames())
 					.addParameter("package_id", ec.getPackageId()).addParameter("document_id", ec.getDocumentId())
 					.addParameter("attachment_path", ec.getAttachmentPath())
 					.addParameter("content_email", ec.getContentEmail())
-					.addParameter("fields_search", ec.getFieldsSearch()).executeUpdate();
-			conn.commit();
-
+					.addParameter("fields_search", ec.getFieldsSearch()).executeUpdate()
+				    .getKey();
+		
+			ec.setId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -270,9 +271,9 @@ public class EmailCampaignDaoImpl implements EmailCampaignDao {
 			if (!names.isEmpty()) {
 				if (!address.isEmpty() || ordenId > 0)
 					sql.append("AND ");
-				sql.append("sec.names = '");
+				sql.append("sec.names like '%");
 				sql.append(names);
-				sql.append("' ");
+				sql.append("%' ");
 			}
 			if (!searchFields.isEmpty()) {
 				if (!names.isEmpty() || !address.isEmpty() || ordenId > 0)
