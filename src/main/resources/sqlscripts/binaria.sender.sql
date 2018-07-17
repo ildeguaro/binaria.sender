@@ -85,3 +85,61 @@ CREATE TABLE sender_campaigns_files(
   metadata text NULL DEFAULT NULL,  
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS sender_stat_type;
+CREATE TABLE sender_stat_type(
+  id int(4) NOT NULL,
+  name varchar(56) NULL DEFAULT NULL,
+  description varchar(256) NULL DEFAULT NULL,
+  icon_path varchar(128) NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT unique_id UNIQUE (id),
+  CONSTRAINT unique_name UNIQUE (name)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS sender_campaign_stat;
+CREATE TABLE sender_campaign_stat(
+  id bigint(40) NOT NULL AUTO_INCREMENT,
+  sender_email_campaign_id bigint(40) NOT NULL,
+  sender_stat_type_id bigint(40) NOT NULL,
+  value_count int(40) NOT NULL DEFAULT 0,
+  value_percent double NOT NULL DEFAULT 0.00,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+INSERT INTO sender_stat_type(id,name,description,icon_path) 
+  VALUES (1,'request', 'The number of emails that were requested to be delivered.', '/images/icons/stats/requests.png');
+INSERT INTO sender_stat_type(id,name,description,icon_path) 
+  VALUES (2,'processed', 'Requests from your website, application, or mail client via SMTP Relay or the API that SendGrid processed.', '/images/icons/stats/processed.png');
+INSERT INTO sender_stat_type(id,name,description,icon_path) 
+  VALUES (3,'delivered', 'The number of emails SendGrid was able to confirm were actually delivered to a recipient.', '/images/icons/stats/delivered.png');
+INSERT INTO sender_stat_type(id,name,description,icon_path) 
+  VALUES (4,'open', 'The total number of times your emails were opened by recipients.', '/images/icons/stats/opens.png');
+
+DROP VIEW IF EXISTS sender_view_stats_global_category;
+CREATE VIEW sender_view_stats_global_category AS
+SELECT email.sender_campaigns_id AS campaigns_id, cat.category, COUNT(email.id) as count
+FROM sender_email_campaign email
+JOIN sender_email_category cat ON cat.sender_email_campaign_id = email.id
+WHERE email.sent
+AND email.sender_campaigns_id = 18
+GROUP BY 1,2;  
+  
+DROP VIEW IF EXISTS sender_view_stats_global;
+CREATE VIEW sender_view_stats_global AS 
+SELECT email.sender_campaigns_id AS campaigns_id,even.event_type AS 'event', stat.description, stat.icon_path, COUNT(email.id) AS 'count' 
+FROM sender_email_campaign email
+JOIN sender_email_events even ON even.esmtp_id = email.esmtp_id
+JOIN sender_stat_type stat ON stat.name = even.event_type
+WHERE email.sent
+GROUP BY 1,2,3,4;
+
+DROP VIEW IF EXISTS sender_view_stats_by_category;
+CREATE VIEW sender_view_stats_global AS 
+SELECT email.sender_campaigns_id AS campaigns_id, cat.category, even.event_type AS 'event', stat.description, stat.icon_path, COUNT(email.id) AS 'count' FROM sender_email_campaign email
+JOIN sender_email_category cat ON cat.sender_email_campaign_id = email.id
+JOIN sender_email_events even ON even.esmtp_id = email.esmtp_id
+JOIN sender_stat_type stat on stat.name = even.event_type
+WHERE email.sent
+GROUP BY 1,2,3,4,5;

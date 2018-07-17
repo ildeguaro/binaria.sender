@@ -25,7 +25,7 @@ public class EmailCampaignServiceTest {
 		EmailCampaign email = new EmailCampaign();
 		email.setEsmtpId("3WwGiVN2TH6sHOYMxvr-aQ");
 		email.setId(1);
-		EmailEvents result = emailCampaignService.getEventsEmail(email.getId());
+		EmailEvents result = emailCampaignService.getEventsEmailViaExternalService(email.getId());
 		assertNotNull(result);
 
 	}

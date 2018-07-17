@@ -105,5 +105,30 @@ public class CampaignDaoImpl implements CampaignDao {
 		}
 		return result;
 	}
+	
+	public List<Campaign> findCampaignTop10() {
+		List<Campaign> result = new ArrayList<Campaign>();
+		Connection conn = null;
+		try {
+			conn = Sql2Connection.getSql2oConnetion().open();
+			result = conn.createQuery("select * from " + TABLE_NAME+ " order by id desc limit 10")
+					.addColumnMapping("customer_id", "customerId")
+					.addColumnMapping("orden_impresion_id", "ordenImpresionId")
+					.addColumnMapping("creation_date", "creationDate")
+					.addColumnMapping("sending_begin", "sendingBeginDate")
+					.addColumnMapping("sending_end", "sendingEndDate")
+					.addColumnMapping("sending_duration", "duration")
+					.addColumnMapping("html_template", "emailTemplate")
+					.executeAndFetch(Campaign.class);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+		}
+		return result;
+	}
 
 }

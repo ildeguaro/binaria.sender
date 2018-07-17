@@ -27,11 +27,30 @@ CREATE TABLE sender_email_campaign(
   sending_date timestamp NULL DEFAULT NULL,
   sender_id bigint(20) NULL DEFAULT NULL,
   sent tinyint(1) NOT NULL DEFAULT 0,
+  category varchar(56) NULL DEFAULT NULL,
   esmtp_id varchar(40) NULL DEFAULT NULL,
   response varchar(512) NULL DEFAULT NULL,
   error varchar(512) DEFAULT NULL,  
   fields_search varchar(1024) NULL DEFAULT NULL,  
-  sender_assigned_id bigint(20),
+  sender_assigned_id bigint(20),  
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS sender_email_events;
+CREATE TABLE sender_email_events(
+  id bigint(40) NOT NULL AUTO_INCREMENT,
+  sender_email_campaign_id bigint(20),
+  esmtp_id varchar(40) NULL DEFAULT NULL,
+  event_type varchar(200) NOT NULL,
+  event_date timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS sender_email_category;
+CREATE TABLE sender_email_category(
+  id bigint(40) NOT NULL AUTO_INCREMENT,
+  sender_email_campaign_id bigint(20),
+  category varchar(56) NULL DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

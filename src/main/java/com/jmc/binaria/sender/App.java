@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.Timer;
 
 import com.jmc.binaria.sender.controller.EmailCampaignController;
+import com.jmc.binaria.sender.db.CampaignDao;
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.EnvironmentVar;
@@ -111,8 +112,10 @@ public class App {
 		get("/" + sender.getName() + "/:hash", new Route() {
 			public String handle(Request rqst, Response rspns) throws Exception {
 				String hash = rqst.params(":hash");
+				List<Campaign> campaigns = service.getCampaignsTop10();
 				Map<String, Object> variables = new HashMap<String, Object>();
 				variables.put("instance", "/" + sender.getName() + "/");
+				variables.put("campaigns", campaigns);
 				String view = "home";
 				return App.interceptorLogin(hash, variables, view);
 			}

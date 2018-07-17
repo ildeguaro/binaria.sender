@@ -15,5 +15,7 @@ public interface CampaignDao {
 	Campaign findCampaignByUiid(String uuid);
 	
 	List<Campaign> allCampaign();
+	
+	List<Campaign> findCampaignTop10();
 
 }

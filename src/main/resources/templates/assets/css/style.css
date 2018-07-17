@@ -956,7 +956,7 @@ PANELS CONFIGURATIONS
 
 /*Panel Size*/
 .pn {
-	height: 250px;
+	/*height: 250px;*/
 	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
 }
 
@@ -1071,6 +1071,13 @@ PANELS CONFIGURATIONS
 
 .white-panel .white-header {
 	background: #f4f4f4;
+	padding: 3px;
+	margin-bottom: 15px;
+	color: #4c1616;
+}
+
+.white-panel .green-header {
+	background: #dbf0e1;
 	padding: 3px;
 	margin-bottom: 15px;
 	color: #4c1616;

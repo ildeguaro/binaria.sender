@@ -82,6 +82,10 @@ public class BinariaSenderService {
 		return campaignDao.allCampaign();
 	}
 	
+	public List<Campaign> getCampaignsTop10(){
+		return campaignDao.findCampaignTop10();
+	}
+	
 	public List<EmailCampaign> getEmailCampaignByBasicSearch(long ordenId, String address, String names, String searchFields) {
 		return emailCampaignDao.findEmailCampaignByOrdenIdAddressNamesOrFieldsSearch(ordenId, address, names, searchFields);
 	}
