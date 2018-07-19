@@ -6,7 +6,7 @@ public class EmailCampaign {
 
 	private long id;
 	
-	private String campaignId;
+	private long campaignId;
 	
 	private String addresses;
 	
@@ -50,11 +50,11 @@ public class EmailCampaign {
 		this.id = id;
 	}
 
-	public String getCampaignId() {
+	public long getCampaignId() {
 		return campaignId;
 	}
 
-	public void setCampaignId(String campaignId) {
+	public void setCampaignId(long campaignId) {
 		this.campaignId = campaignId;
 	}
 

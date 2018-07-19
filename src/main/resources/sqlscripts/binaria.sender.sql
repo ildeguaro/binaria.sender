@@ -109,13 +109,13 @@ CREATE TABLE sender_campaign_stat(
 
 
 INSERT INTO sender_stat_type(id,name,description,icon_path) 
-  VALUES (1,'request', 'The number of emails that were requested to be delivered.', '/images/icons/stats/requests.png');
+  VALUES (1,'request', 'The number of emails that were requested to be delivered.', '/assets/img/icons/stats/requests.png');
 INSERT INTO sender_stat_type(id,name,description,icon_path) 
-  VALUES (2,'processed', 'Requests from your website, application, or mail client via SMTP Relay or the API that SendGrid processed.', '/images/icons/stats/processed.png');
+  VALUES (2,'processed', 'Procesados', '/assets/img/icons/stats/processed.png');
 INSERT INTO sender_stat_type(id,name,description,icon_path) 
-  VALUES (3,'delivered', 'The number of emails SendGrid was able to confirm were actually delivered to a recipient.', '/images/icons/stats/delivered.png');
+  VALUES (3,'delivered', 'Entregados', '/assets/img/icons/stats/delivered.png');
 INSERT INTO sender_stat_type(id,name,description,icon_path) 
-  VALUES (4,'open', 'The total number of times your emails were opened by recipients.', '/images/icons/stats/opens.png');
+  VALUES (4,'open', 'Abiertos', '/assets/img/icons/stats/open.png');
 
 DROP VIEW IF EXISTS sender_view_stats_global_category;
 CREATE VIEW sender_view_stats_global_category AS
@@ -136,7 +136,7 @@ WHERE email.sent
 GROUP BY 1,2,3,4;
 
 DROP VIEW IF EXISTS sender_view_stats_by_category;
-CREATE VIEW sender_view_stats_global AS 
+CREATE VIEW sender_view_stats_by_category AS 
 SELECT email.sender_campaigns_id AS campaigns_id, cat.category, even.event_type AS 'event', stat.description, stat.icon_path, COUNT(email.id) AS 'count' FROM sender_email_campaign email
 JOIN sender_email_category cat ON cat.sender_email_campaign_id = email.id
 JOIN sender_email_events even ON even.esmtp_id = email.esmtp_id

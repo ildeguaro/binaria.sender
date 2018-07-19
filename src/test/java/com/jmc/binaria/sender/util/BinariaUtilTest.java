@@ -17,7 +17,7 @@ public class BinariaUtilTest {
 	@Test
 	public void separarPdf() throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		Campaign campaign = new Campaign();
-		campaign.setId("1");
+		campaign.setId(1);
 		BinariaUtil.separarDocumentosYEncolarEnvioPorPdf(new File("/tmp/PAQUETE_001_WILLIAM.pdf"), "/tmp/separacion/",
 				campaign);
 	}

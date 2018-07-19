@@ -4,6 +4,8 @@ import com.jmc.binaria.sender.db.CampaignDao;
 import com.jmc.binaria.sender.db.CampaignDaoImpl;
 import com.jmc.binaria.sender.db.EmailCampaignDao;
 import com.jmc.binaria.sender.db.EmailCampaignDaoImpl;
+import com.jmc.binaria.sender.db.stats.StatsGlobalDao;
+import com.jmc.binaria.sender.db.stats.StatsGlobalDaoImpl;
 import com.jmc.binaria.sender.model.Customer;
 import com.jmc.binaria.sender.model.EmailCampaign;
 import com.jmc.binaria.sender.model.Campaign;
@@ -35,12 +37,15 @@ public class BinariaSenderService {
 	private CampaignDao campaignDao;
 
 	private EmailCampaignDao emailCampaignDao;
+	
+	private StatsGlobalDao statsGlobalDao;
 
 	private StringTokenizer sti;
 
 	public BinariaSenderService() {
 		campaignDao = new CampaignDaoImpl();
 		emailCampaignDao = new EmailCampaignDaoImpl();
+		statsGlobalDao = new StatsGlobalDaoImpl();
 	}
 
 	public Campaign createEmailCampaign(SendEmailPayload payload) throws IOException, InterruptedException {
@@ -83,7 +88,13 @@ public class BinariaSenderService {
 	}
 	
 	public List<Campaign> getCampaignsTop10(){
-		return campaignDao.findCampaignTop10();
+		List<Campaign> campaigns = campaignDao.findCampaignTop10();
+		campaigns.parallelStream().forEach( i -> {
+			i.setStatsGlobal(statsGlobalDao.finbByCampaignId(i.getId()));
+			i.setSentCount(statsGlobalDao.getSentCount(i.getId()));
+		});
+		
+		return campaigns; 
 	}
 	
 	public List<EmailCampaign> getEmailCampaignByBasicSearch(long ordenId, String address, String names, String searchFields) {

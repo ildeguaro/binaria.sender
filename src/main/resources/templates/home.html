@@ -106,47 +106,62 @@
 
 						<div class="row mt">
 							<!-- ORDEN STATUS PANELS -->
-							
+
 							<div class="col-md-6 col-sm-6 mb" th:each="c : ${campaigns}">
 								<div class="white-panel pn donut-chart">
 									<div class="green-header">
-										<h5 th:text="${'Orden de Envio'+c.name}">Orden de Envio </h5>
+										<h5 th:text="${'Orden de Envio'+c.name}">Orden de Envio</h5>
 									</div>
 									<div class="row">
 										<div class="col-md-2 col-sm-2 col-md-offset-1 box0">
 											<div class="box1">
-												<span class="li_heart"></span>
-												<h3>933</h3>
+												<span>
+												  <img  th:if="${c.sentCount > 0}" src="/assets/img/icons/stats/sent.png" />
+												  <img  th:if="${c.sentCount <= 0}" src="/assets/img/icons/stats/sent-off.png" />
+												</span>
+												<h3 th:text="${c.sentCount}">933</h3>
 											</div>
-											<p>Mas Detalles</p>
+											<p>Enviados</p>
 										</div>
-										<div class="col-md-2 col-sm-2 box0">
+
+										<div class="col-md-3 col-sm-3 box0"
+											th:each="stat : ${c.statsGlobal}">
 											<div class="box1">
-												<span class="li_cloud"></span>
-												<h3>+48</h3>
+												<span><img th:src="${stat.iconEvent}" /></span>
+												<h3 th:text="${stat.count}">+48</h3>
 											</div>
-											<p>Mas Detalles</p>
+											<p th:text="${stat.descriptionEvent}" />
 										</div>
-										<div class="col-md-2 col-sm-2 box0">
-											<div class="box1">
-												<span class="li_stack"></span>
-												<h3>23</h3>
+
+										<div th:if="${c.statsGlobal.isEmpty()}">
+
+											<div class="col-md-3 col-sm-3 box0">
+												<div class="box1">
+													<span><img
+														src="/assets/img/icons/stats/processed-off.png" /></span>
+													<h3>0</h3>
+												</div>
+												<p>Processed</p>
 											</div>
-											<p>Mas Detalles</p>
-										</div>
-										<div class="col-md-2 col-sm-2 box0">
-											<div class="box1">
-												<span class="li_news"></span>
-												<h3>+10</h3>
+											
+											<div class="col-md-3 col-sm-3 box0">
+												<div class="box1">
+													<span><img
+														src="/assets/img/icons/stats/delivered-off.png" /></span>
+													<h3>0</h3>
+												</div>
+												<p>Delivered</p>
 											</div>
-											<p>Mas Detalles</p>
-										</div>
-										<div class="col-md-2 col-sm-2 box0">
-											<div class="box1">
-												<span class="li_data"></span>
-												<h3>OK!</h3>
+											
+											<div class="col-md-3 col-sm-3 box0">
+												<div class="box1">
+													<span><img
+														src="/assets/img/icons/stats/open-off.png" /></span>
+													<h3>0</h3>
+												</div>
+												<p>Open</p>
 											</div>
-											<p>Mas Detalles</p>
+
 										</div>
 
 									</div>
@@ -160,7 +175,7 @@
 					<!-- /col-lg-9 END SECTION MIDDLE -->
 
 
-	<!-- **********************************************************************************************************************************************************
+					<!-- **********************************************************************************************************************************************************
       RIGHT SIDEBAR CONTENT
       *********************************************************************************************************************************************************** -->
 
@@ -296,6 +311,7 @@
 		
 		
 		
+		
         $(document).ready(function () {
             $("#date-popover").popover({html: true, trigger: "manual"});
             $("#date-popover").hide();
@@ -329,6 +345,7 @@
             console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
         }
     
+	
 	
 	
 	

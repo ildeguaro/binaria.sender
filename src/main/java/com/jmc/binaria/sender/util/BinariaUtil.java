@@ -121,7 +121,7 @@ public class BinariaUtil {
 		return Integer.parseInt(sti.nextToken());
 	}
 
-	private static void encolaDocuments(File file, String paqueteName, String campaignId, String direccion,
+	private static void encolaDocuments(File file, String paqueteName, long campaignId, String direccion,
 			String nombreDestinatario, String emailTemplate, String fieldsSearch) {
 		List<EmailCategory> categories = new ArrayList<EmailCategory>();
 		try {

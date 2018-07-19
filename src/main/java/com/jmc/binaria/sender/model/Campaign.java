@@ -1,10 +1,13 @@
 package com.jmc.binaria.sender.model;
 
 import java.util.Date;
+import java.util.List;
+
+import com.jmc.binaria.sender.model.stats.StatsGlobal;
 
 public class Campaign {
 
-	private String id;
+	private long id;
 
 	private String uuid;
 
@@ -27,12 +30,16 @@ public class Campaign {
 	private int duration;
 
 	private String status;
+	
+	private int sentCount;
+	
+	private List<StatsGlobal> statsGlobal;
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -122,6 +129,22 @@ public class Campaign {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public List<StatsGlobal> getStatsGlobal() {
+		return statsGlobal;
+	}
+
+	public void setStatsGlobal(List<StatsGlobal> statsGlobal) {
+		this.statsGlobal = statsGlobal;
+	}
+
+	public int getSentCount() {
+		return sentCount;
+	}
+
+	public void setSentCount(int sentCount) {
+		this.sentCount = sentCount;
 	}	
 
 }
