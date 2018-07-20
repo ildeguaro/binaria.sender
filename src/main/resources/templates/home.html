@@ -100,74 +100,104 @@
 		<!--main content start-->
 		<section id="main-content">
 			<section class="wrapper">
-
 				<div class="row">
 					<div class="col-lg-9 main-chart">
 
-						<div class="row mt">
-							<!-- ORDEN STATUS PANELS -->
+						<ul class="nav nav-tabs">
+							<li class="active"><a href="#global">Global</a></li>
+							<li><a href="#byCat">Por Categorias</a></li>
+							<li><a href="#menu2">Por Eventos</a></li>
 
-							<div class="col-md-6 col-sm-6 mb" th:each="c : ${campaigns}">
-								<div class="white-panel pn donut-chart">
-									<div class="green-header">
-										<h5 th:text="${'Orden de Envio'+c.name}">Orden de Envio</h5>
+						</ul>
+						<div class="tab-content">
+
+							<div id="byCat" class="tab-pane fade">
+								<h3>Menu 1</h3>
+								<p>Ut enim ad minim veniam, quis nostrud exercitation
+									ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+							</div>
+							<div id="global" class="tab-pane fade in active">
+								<div class="row mt">
+									<!-- ORDEN STATUS PANELS -->
+
+									<div class="col-md-6 col-sm-6 mb" th:each="c : ${campaigns}">
+										<div class="white-panel pn donut-chart">
+											<div class="green-header">
+												<h5 th:text="${'Orden de Envio '+c.name}">Orden de
+													Envio</h5>
+											</div>
+											<div class="row description">
+												<div class="col-md-9 col-sm-9">
+													<div th:text="${'UUID : '+c.uuid}" />
+													<div th:text="${'Fecha de Creacion : '+c.creationDate}" />
+												</div>
+												<div class="col-md-3 col-sm-3 text-right"
+													title="Refrescar Data">
+													<button type="button"
+														class="btn btn-default btn-sm refresh-color">
+														<span class="glyphicon glyphicon-refresh"></span>
+													</button>
+												</div>
+											</div>
+											<div class="row row-stats">
+												<div class="col-md-3 col-sm-3  box0">
+													<div class="box1">
+														<span> <img th:if="${c.sentCount > 0}"
+															src="/assets/img/icons/stats/sent.png" /> <img
+															th:if="${c.sentCount <= 0}"
+															src="/assets/img/icons/stats/sent-off.png" />
+														</span>
+														<h2 th:text="${c.sentCount}">933</h2>
+													</div>
+													<p>Enviados</p>
+												</div>
+
+												<div class="col-md-3 col-sm-3 box0"
+													th:each="stat : ${c.statsGlobal}">
+													<div class="box1">
+														<span><img th:src="${stat.iconEvent}" /></span>
+														<h2 th:text="${stat.count}">+48</h2>
+													</div>
+													<p th:text="${stat.descriptionEvent}" />
+												</div>
+
+												<div th:if="${c.statsGlobal.isEmpty()}">
+
+													<div class="col-md-3 col-sm-3 box0">
+														<div class="box1">
+															<span><img
+																src="/assets/img/icons/stats/processed-off.png" /></span>
+															<h2>0</h2>
+														</div>
+														<p>Processed</p>
+													</div>
+
+													<div class="col-md-3 col-sm-3 box0">
+														<div class="box1">
+															<span><img
+																src="/assets/img/icons/stats/delivered-off.png" /></span>
+															<h2>0</h2>
+														</div>
+														<p>Delivered</p>
+													</div>
+
+													<div class="col-md-3 col-sm-3 box0">
+														<div class="box1">
+															<span><img
+																src="/assets/img/icons/stats/open-off.png" /></span>
+															<h2>0</h2>
+														</div>
+														<p>Open</p>
+													</div>
+
+												</div>
+
+											</div>
+
+										</div>
+										<!--/grey-panel -->
 									</div>
-									<div class="row">
-										<div class="col-md-2 col-sm-2 col-md-offset-1 box0">
-											<div class="box1">
-												<span>
-												  <img  th:if="${c.sentCount > 0}" src="/assets/img/icons/stats/sent.png" />
-												  <img  th:if="${c.sentCount <= 0}" src="/assets/img/icons/stats/sent-off.png" />
-												</span>
-												<h3 th:text="${c.sentCount}">933</h3>
-											</div>
-											<p>Enviados</p>
-										</div>
-
-										<div class="col-md-3 col-sm-3 box0"
-											th:each="stat : ${c.statsGlobal}">
-											<div class="box1">
-												<span><img th:src="${stat.iconEvent}" /></span>
-												<h3 th:text="${stat.count}">+48</h3>
-											</div>
-											<p th:text="${stat.descriptionEvent}" />
-										</div>
-
-										<div th:if="${c.statsGlobal.isEmpty()}">
-
-											<div class="col-md-3 col-sm-3 box0">
-												<div class="box1">
-													<span><img
-														src="/assets/img/icons/stats/processed-off.png" /></span>
-													<h3>0</h3>
-												</div>
-												<p>Processed</p>
-											</div>
-											
-											<div class="col-md-3 col-sm-3 box0">
-												<div class="box1">
-													<span><img
-														src="/assets/img/icons/stats/delivered-off.png" /></span>
-													<h3>0</h3>
-												</div>
-												<p>Delivered</p>
-											</div>
-											
-											<div class="col-md-3 col-sm-3 box0">
-												<div class="box1">
-													<span><img
-														src="/assets/img/icons/stats/open-off.png" /></span>
-													<h3>0</h3>
-												</div>
-												<p>Open</p>
-											</div>
-
-										</div>
-
-									</div>
-
 								</div>
-								<!--/grey-panel -->
 							</div>
 						</div>
 						<!-- /row -->
@@ -308,11 +338,18 @@
 
 	<script type="application/javascript">
 		
-		
-		
-		
-		
         $(document).ready(function () {
+        	
+        	$(".nav-tabs a").click(function(){
+     	        $(this).tab('show');
+     	    });
+     	    $('.nav-tabs a').on('shown.bs.tab', function(event){
+     	        var x = $(event.target).text();         // active tab
+     	        var y = $(event.relatedTarget).text();  // previous tab
+     	        $(".act span").text(x);
+     	        $(".prev span").text(y);
+     	    });
+        	
             $("#date-popover").popover({html: true, trigger: "manual"});
             $("#date-popover").hide();
             $("#date-popover").click(function (e) {
@@ -345,6 +382,21 @@
             console.log('nav ' + nav + ' to: ' + to.month + '/' + to.year);
         }
     
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
