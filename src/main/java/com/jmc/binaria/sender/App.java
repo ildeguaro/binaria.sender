@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.Timer;
 
 import com.jmc.binaria.sender.controller.EmailCampaignController;
+import com.jmc.binaria.sender.controller.StatsController;
 import com.jmc.binaria.sender.db.CampaignDao;
 import com.jmc.binaria.sender.model.Campaign;
 import com.jmc.binaria.sender.model.EmailCampaign;
@@ -184,6 +185,7 @@ public class App {
 		});
 		
 		EmailCampaignController.routes();
+		StatsController.routes();
 
 		logger.info("\n \u263A Running service: binaria.sender as : {}", sender.getUriAccess());
 

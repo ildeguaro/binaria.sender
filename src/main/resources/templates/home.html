@@ -104,18 +104,10 @@
 					<div class="col-lg-9 main-chart">
 
 						<ul class="nav nav-tabs">
-							<li class="active"><a href="#global">Global</a></li>
-							<li><a href="#byCat">Por Categorias</a></li>
-							<li><a href="#menu2">Por Eventos</a></li>
-
+							<li class="active"><a href="#global">Estadisticas
+									Globales</a></li>
 						</ul>
 						<div class="tab-content">
-
-							<div id="byCat" class="tab-pane fade">
-								<h3>Menu 1</h3>
-								<p>Ut enim ad minim veniam, quis nostrud exercitation
-									ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-							</div>
 							<div id="global" class="tab-pane fade in active">
 								<div class="row mt">
 									<!-- ORDEN STATUS PANELS -->
@@ -123,19 +115,32 @@
 									<div class="col-md-6 col-sm-6 mb" th:each="c : ${campaigns}">
 										<div class="white-panel pn donut-chart">
 											<div class="green-header">
-												<h5 th:text="${'Orden de Envio '+c.name}">Orden de
-													Envio</h5>
+												<h5 th:text="${c.name}" />
 											</div>
 											<div class="row description">
-												<div class="col-md-9 col-sm-9">
-													<div th:text="${'UUID : '+c.uuid}" />
-													<div th:text="${'Fecha de Creacion : '+c.creationDate}" />
+												<div class="col-md-10 col-sm-10">
+													<div class="row">
+														<div class="col-md-4 col-sm-4">UUID</div>
+														<div class="col-md-8 col-sm-8 intense" th:text="${c.uuid}" />
+														<div class="col-md-4 col-sm-4">Fecha de Creacion</div>
+														<div class="col-md-8 col-sm-8 intense"
+															th:text="${c.creationDate}" />
+													</div>
 												</div>
-												<div class="col-md-3 col-sm-3 text-right"
+												<div class="col-md-1 col-sm-1 text-right"
+													title="Ampliar detalle">
+													<button type="button"
+														class="btn btn-default btn-sm detail-color detail-dialog"
+														data-toggle="modal" data-target="#ordenDialog"
+														data-th-attr="data-orden-id=${c.id}">
+														<span class="glyphicon glyphicon-new-window" />
+													</button>
+												</div>
+												<div class="col-md-1 col-sm-1 text-right"
 													title="Refrescar Data">
 													<button type="button"
 														class="btn btn-default btn-sm refresh-color">
-														<span class="glyphicon glyphicon-refresh"></span>
+														<span class="glyphicon glyphicon-refresh" />
 													</button>
 												</div>
 											</div>
@@ -297,9 +302,61 @@
 					</div>
 					<!-- /col-lg-3 -->
 				</div>
+
+
+				<div class="modal fade" id="ordenDialog" tabindex="-1" role="dialog"
+					aria-labelledby="exampleModalCenterTitle" aria-hidden="true"
+					hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="modal-title">Detalle de Envio</h5>
+
+							</div>
+							<div id="modal-body" class="modal-body">
+
+								<svg width="100%" height="100%"
+									xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
+									preserveAspectRatio="xMidYMid" class="lds-lds-clock">
+												<g transform="translate(50 50)">
+												<g ng-attr-transform="scale({{config.scale}})"
+										transform="scale(1.2)">
+												<g transform="translate(-50 -50)">
+												<path ng-attr-fill="{{config.c1}}"
+										ng-attr-stroke="{{config.c1}}"
+										ng-attr-stroke-width="{{config.width}}"
+										d="M50,14c19.85,0,36,16.15,36,36S69.85,86,50,86S14,69.85,14,50S30.15,14,50,14 M50,10c-22.091,0-40,17.909-40,40 s17.909,40,40,40s40-17.909,40-40S72.091,10,50,10L50,10z"
+										fill="#57aa78" stroke="#57aa78" stroke-width="0"></path>
+												<path ng-attr-fill="{{config.c3}}"
+										d="M52.78,42.506c-0.247-0.092-0.415-0.329-0.428-0.603L52.269,40l-0.931-21.225C51.304,18.06,50.716,17.5,50,17.5 s-1.303,0.56-1.338,1.277L47.731,40l-0.083,1.901c-0.013,0.276-0.181,0.513-0.428,0.604c-0.075,0.028-0.146,0.063-0.22,0.093V44h6 v-1.392C52.925,42.577,52.857,42.535,52.78,42.506z"
+										fill="#bbcedd">
+												<animateTransform attributeName="transform" type="rotate"
+										calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1"
+										dur="2.5s" begin="0s" repeatCount="indefinite"></animateTransform></path>
+												<path ng-attr-fill="{{config.c2}}"
+										d="M58.001,48.362c-0.634-3.244-3.251-5.812-6.514-6.391c-3.846-0.681-7.565,1.35-9.034,4.941 c-0.176,0.432-0.564,0.717-1.013,0.744l-15.149,0.97c-0.72,0.043-1.285,0.642-1.285,1.383c0,0.722,0.564,1.321,1.283,1.363 l15.153,0.971c0.447,0.027,0.834,0.312,1.011,0.744c1.261,3.081,4.223,5.073,7.547,5.073c2.447,0,4.744-1.084,6.301-2.975 C57.858,53.296,58.478,50.808,58.001,48.362z M50,53.06c-1.688,0-3.06-1.373-3.06-3.06s1.373-3.06,3.06-3.06s3.06,1.373,3.06,3.06 S51.688,53.06,50,53.06z"
+										fill="#85a2b6">
+												<animateTransform attributeName="transform" type="rotate"
+										calcMode="linear" values="0 50 50;360 50 50" keyTimes="0;1"
+										dur="10s" begin="0s" repeatCount="indefinite"></animateTransform></path></g></g></g></svg>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">Close</button>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
 				<! --/row -->
 			</section>
 		</section>
+
+
 
 		<!--main content end-->
 		<!--footer start-->
@@ -312,6 +369,8 @@
 		</footer>
 		<!--footer end-->
 	</section>
+
+
 
 	<!-- js placed at the end of the document so the pages load faster -->
 	<script src="/assets/js/jquery.js"></script>
@@ -337,6 +396,7 @@
 
 
 	<script type="application/javascript">
+				
 		
         $(document).ready(function () {
         	
@@ -383,19 +443,53 @@
         }
     
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		$(document).on("click", ".detail-dialog", function() {
+			var id = $(this).data('orden-id');
+			
+			
+			$.ajax({
+				type : "GET",
+				dataType : "json",
+				url : "/api/stats/by-category/" + id,
+				success : function(data) {					
+					console.log(data);		
+					
+					
+					var cats = data;
+					
+					var body = "<div class='row'>";					
+					for (var i = 0; i < cats.length; i++) {
+						
+						body = body.concat("    <div class='col-md-12 col-sm-12'>");
+						body = body.concat("     <h4>Categoria "+cats[i].category+" : "+cats[i].count +"</h4>");
+						body = body.concat("    </div>");
+					
+						
+						body = body.concat("<div class='row row-stats'>");
+						var details = cats[i].detail;
+						for (var k = 0; k < details.length; k++) {						
+							
+							body = body.concat("  <div class='col-md-3 col-sm-3'>");
+							body = body.concat("    <div class='centered'>");
+							body = body.concat("      <span><img  width='28' height='28' src='"+details[k].iconEvent+"'/><img></span>");
+							body = body.concat("      <h4>"+details[k].count+"</h4>");
+							body = body.concat("      <h5>"+details[k].descriptionEvent+"</h5>");
+							body = body.concat("    </div>");					  
+							body = body.concat("  </div>");
+							
+						}
+						body = body.concat("</div> ");
+						body = body.concat("<div class='description'/>");
+					}
+					body = body.concat("  </div>");
+					$('#modal-body').html(body);
+					
+				},
+				error : function(error) {
+					console.log(error);
+				}
+			});
+		});
 	
 	
 	

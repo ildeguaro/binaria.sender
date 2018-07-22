@@ -2410,4 +2410,13 @@ label {
 	background: none;	
 	color: #dbe4d3;
 }
+.intense{
+	font-weight: 800;
+	color: #babdb6;
+}
+
+.detail-color{	
+	color: #a1b8ca;
+	border: 1px solid #dbe4d3;
+}
 
